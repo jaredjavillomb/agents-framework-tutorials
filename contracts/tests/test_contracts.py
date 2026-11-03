@@ -55,6 +55,19 @@ def test_issue_refund_ledger_and_limits():
     assert [(r["order_id"], r["amount"]) for r in st.refunds()] == [("A1002", 45.0)]
 
 
+def test_issue_refund_counts_earlier_refunds():
+    assert json.loads(st.issue_refund("A1004", 60, "broken"))["status"] == "issued"
+    second = json.loads(st.issue_refund("A1004", 60, "broken, photo sent"))
+    assert second == {"error": "amount_exceeds_remaining", "order_id": "A1004", "amount": 60.0,
+                      "already_refunded": 60.0, "remaining": 0.0}
+    assert json.loads(st.issue_refund("A1003", 200, "partial"))["status"] == "issued"
+    assert json.loads(st.issue_refund("A1003", 50, "rest"))["status"] == "issued"
+    assert json.loads(st.issue_refund("A1003", 0.01, "too much"))["error"] == "amount_exceeds_remaining"
+    assert sum(r["amount"] for r in st.refunds()) == 60 + 250
+    st.reset()
+    assert json.loads(st.issue_refund("A1004", 60, "after reset"))["status"] == "issued"
+
+
 def test_escalate_and_tool_log_and_reset():
     assert json.loads(st.escalate_to_human("", "poem request"))["ticket_id"] == "TCK-GENERAL"
     assert json.loads(st.escalate_to_human("A1003", "rejected"))["ticket_id"] == "TCK-A1003"

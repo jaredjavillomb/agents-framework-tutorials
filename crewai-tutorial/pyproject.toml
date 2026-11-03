@@ -5,6 +5,7 @@ requires-python = ">=3.12,<3.14"
 dependencies = [
     "agent-contracts",
     "crewai",
+    "ollama",  # for the local embedder behind CrewAI memory (crew_agents/memory.py)
     "ipykernel",
     "jupyter",
     "python-dotenv",

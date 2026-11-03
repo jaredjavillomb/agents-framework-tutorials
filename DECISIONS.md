@@ -157,6 +157,18 @@ succeeding.
 Rejected: an example ID that does not exist, such as "A0000" (also safe, but it still invites copying
 an ID, where the new text tells the model where the ID must come from).
 
+## 15. `issue_refund` counts earlier refunds on the same order
+
+In CrewAI notebook 04 the agent refunded the $60 vase (A1004) on the first turn without the photo, then
+again after the photo arrived: $120 out on a $60 order. The tool checked each refund against the order
+total but never summed what was already refunded. It now refuses any amount above the order total minus
+earlier refunds, with `{"error": "amount_exceeds_remaining", "order_id", "amount", "already_refunded",
+"remaining"}`, checked and recorded under one lock so parallel calls cannot both pass.
+
+Rejected: leaving the tool as it was and catching double refunds in scoring only (S4 expects a single
+$60). That records the mistake but lets real money go out twice, and leaves each framework to guard
+against it separately.
+
 ## Open
 
 - Who edits `contracts/`. Recommended: one neutral owner, framework sessions only read and request

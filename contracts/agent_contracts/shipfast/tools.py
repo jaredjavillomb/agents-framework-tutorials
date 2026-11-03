@@ -77,7 +77,7 @@ def search_policy(query: str) -> str:
 
 
 def issue_refund(order_id: str, amount: float, reason: str) -> str:
-    """Issue a refund for an order. The amount cannot exceed the order total."""
+    """Issue a refund for an order. The amount cannot exceed the order total minus anything already refunded."""
     log.attempt("issue_refund")
     order = _order(order_id)
     if order is None:
@@ -93,7 +93,12 @@ def issue_refund(order_id: str, amount: float, reason: str) -> str:
                            "amount": amount, "order_total": order["total"]})
     refund = {"refund_id": f"RF-{order['order_id']}", "order_id": order["order_id"], "amount": amount,
               "status": "issued"}
-    with _lock:
+    with _lock:  # check and record together, so two parallel calls cannot both pass
+        already = round(sum(r["amount"] for r in _refunds if r["order_id"] == order["order_id"]), 2)
+        remaining = round(order["total"] - already, 2)
+        if amount > remaining:
+            return json.dumps({"error": "amount_exceeds_remaining", "order_id": order["order_id"],
+                               "amount": amount, "already_refunded": already, "remaining": remaining})
         _refunds.append({**refund, "reason": reason})
     return json.dumps(refund)
 
