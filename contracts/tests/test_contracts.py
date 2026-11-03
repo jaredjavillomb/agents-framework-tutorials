@@ -4,7 +4,8 @@ import json
 
 import pytest
 
-from agent_contracts.harness import RunMetrics, ToolCallLog, build_results, load_settings, write_results
+from agent_contracts.harness import (RunMetrics, ToolCallLog, build_results, load_settings, verify_model,
+                                     write_results)
 from agent_contracts.research import tools as rt
 from agent_contracts.research.schema import Critique, Report
 from agent_contracts.research.scoring import load_questions, matches, normalize, score_report
@@ -194,7 +195,25 @@ def test_metrics_and_results(tmp_path, monkeypatch):
 def test_settings(monkeypatch):
     monkeypatch.delenv("MODEL", raising=False)
     s = load_settings()
-    assert s.model == "qwen3:8b" and s.think is False
+    assert s.model == "qwen3-agents" and s.think is False
     assert s.options() == {"temperature": 0.0, "seed": 42, "num_ctx": 16384}
     monkeypatch.setenv("MODEL", "qwen3:14b")
     assert load_settings().model == "qwen3:14b"
+
+
+def test_modelfile_matches_settings():
+    from pathlib import Path
+    from agent_contracts.harness.settings import BASE_MODEL
+    text = (Path(__file__).parents[1] / "ollama" / "Modelfile").read_text()
+    s = load_settings()
+    assert f"FROM {BASE_MODEL}" in text
+    assert f"PARAMETER num_ctx {s.num_ctx}" in text and f"PARAMETER seed {s.seed}" in text
+    assert "PARAMETER temperature 0" in text
+
+
+def test_verify_model_parses_parameters_and_reports_unreachable():
+    from agent_contracts.harness.settings import ModelSettings, _model_parameters
+    params = _model_parameters({"parameters": 'num_ctx                        16384\nseed 42\nstop "<|im_end|>"'})
+    assert params["num_ctx"] == "16384" and params["seed"] == "42" and params["stop"] == "<|im_end|>"
+    with pytest.raises(RuntimeError, match="not reachable"):
+        verify_model(ModelSettings(host="http://127.0.0.1:9"), timeout=1)

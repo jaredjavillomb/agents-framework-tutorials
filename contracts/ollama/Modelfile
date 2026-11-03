@@ -1,0 +1,9 @@
+# The shared model for every build (DECISIONS.md 10 and 12).
+# Create it once:  ollama create qwen3-agents -f contracts/ollama/Modelfile
+# The settings live in the model so they apply on every API, including the OpenAI-style one CrewAI
+# uses, which ignores a per-request num_ctx. Thinking cannot be set here; every build turns it off
+# per request.
+FROM qwen3:8b
+PARAMETER num_ctx 16384
+PARAMETER temperature 0
+PARAMETER seed 42

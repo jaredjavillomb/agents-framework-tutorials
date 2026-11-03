@@ -2,8 +2,8 @@
 
 from .metrics import RunMetrics
 from .results import build_results, summarize, write_results
-from .settings import ModelSettings, load_settings
+from .settings import ModelSettings, load_settings, verify_model
 from .toollog import ToolCallLog
 
-__all__ = ["RunMetrics", "ToolCallLog", "ModelSettings", "load_settings", "build_results", "summarize",
-           "write_results"]
+__all__ = ["RunMetrics", "ToolCallLog", "ModelSettings", "load_settings", "verify_model", "build_results",
+           "summarize", "write_results"]

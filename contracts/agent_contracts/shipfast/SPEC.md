@@ -24,19 +24,26 @@ A customer writes in about a delivery or refund. The agent:
 
 ## 2. Model
 
-Shared with the research agent (DECISIONS.md 4, 10 and 11). Everything runs locally; there is no API key.
+Shared with the research agent (DECISIONS.md 4, 10, 11 and 12). Everything runs locally; there is no
+API key.
 
-- Model **`qwen3:8b`**, served by **Ollama** at `http://localhost:11434` (override with `OLLAMA_HOST`).
-- `MODEL` env var overrides the model, written the plain Ollama way (`qwen3:8b`). Each build adds its
-  framework's prefix itself (for example LangChain `ollama:` or LiteLLM `ollama_chat/`); check the
-  exact format against the installed version.
-- Every build sends the same options, explicitly, on every call: `temperature` 0, `seed` 42,
-  `num_ctx` 16384 (Ollama's own default on the reference Mac is 4096, which silently breaks long
-  tool-calling runs), and thinking off (`think: false`, or the framework's equivalent). The values
-  live in `agent_contracts.harness.load_settings()`.
-- If a framework cannot pass one of these options, the build says so in its notebook and in the
-  comparison. It does not work around it silently.
-- Python 3.12, managed with `uv`.
+- Model **`qwen3-agents`**, served by **Ollama** at `http://localhost:11434` (override with
+  `OLLAMA_HOST`). It is `qwen3:8b` with `num_ctx` 16384, `temperature` 0 and `seed` 42 written into
+  the model by `contracts/ollama/Modelfile`; create it once with
+  `ollama create qwen3-agents -f contracts/ollama/Modelfile`. Ollama's own default context on the
+  reference Mac is 4096, which silently breaks long tool-calling runs, and the OpenAI-style API that
+  CrewAI uses ignores a per-request `num_ctx`, so the settings must live in the model.
+- `MODEL` env var overrides the model, written the plain Ollama way. Each build adds its framework's
+  prefix itself (CrewAI `ollama/`; LangChain and Strands take the bare name).
+- Thinking off on every call, which a Modelfile cannot set: `reasoning=False` (LangChain),
+  `additional_args={"think": False}` (Strands), `reasoning_effort="none"` (CrewAI). Builds whose
+  framework can also send `temperature`, `seed` and `num_ctx` per request do so
+  (`agent_contracts.harness.load_settings().options()`).
+- Every runner calls `agent_contracts.harness.verify_model()` first; it fails if Ollama is down or
+  the model lacks the shared settings.
+- If a framework cannot pass a setting, the build says so in its notebook and in the comparison. It
+  does not work around it silently.
+- Python 3.12 or later, managed with `uv` (the reference environments use 3.13).
 
 ## 3. Tools (same names, arguments and return shapes in all builds)
 
@@ -105,7 +112,7 @@ Write results to `results/shipfast/<framework>.json` at the repo root:
 {
   "framework": "langgraph | crewai | strands",
   "framework_version": "x.y.z",
-  "model": "qwen3:8b",
+  "model": "qwen3-agents",
   "run_at": "ISO timestamp",
   "scenarios": [
     {

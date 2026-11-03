@@ -51,7 +51,7 @@ def _not_found(order_id: str) -> str:
 
 
 def lookup_order(order_id: str) -> str:
-    """Look up an order by its ID (for example A1001). Returns the order without tracking events."""
+    """Look up an order by the order ID from the conversation; never guess one. Returns the order without tracking events."""
     log.attempt("lookup_order")
     order = _order(order_id)
     if order is None:

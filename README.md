@@ -29,7 +29,8 @@ DECISIONS.md          what was decided, and what was rejected
 
 ```bash
 brew install ollama && ollama serve   # in its own terminal; no API key is needed
-ollama pull qwen3:8b                  # the shared model, about 5 GB
+ollama pull qwen3:8b                  # the base model, about 5 GB
+ollama create qwen3-agents -f contracts/ollama/Modelfile   # the shared model with its settings
 cp .env.example .env                  # optional overrides only
 cd langgraph-tutorial && uv sync      # same in crewai-tutorial/ and strands-tutorial/
 ```

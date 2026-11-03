@@ -4,7 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "agent-contracts",
-    "strands-agents",
+    "strands-agents[ollama]",
     "ipykernel",
     "jupyter",
     "python-dotenv",
@@ -12,3 +12,10 @@ dependencies = [
 
 [tool.uv.sources]
 agent-contracts = { path = "../contracts", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["strands_agents_impl"]

@@ -116,6 +116,47 @@ not 30 to 60.
 Rejected: thinking on. Slower by 8 to 10 times; whether it fixes the made-up refund amount was not
 measured, because the run was stopped once speed decided it.
 
+## 12. Shared settings live in the model: `qwen3-agents`, built from `qwen3:8b`
+
+`contracts/ollama/Modelfile` creates `qwen3-agents` from `qwen3:8b` with `num_ctx` 16384,
+`temperature` 0 and `seed` 42 written in. Every build uses that name; thinking is still turned off per
+request, because a Modelfile cannot set it. Every runner calls `harness.verify_model()` first.
+
+Evidence (a recording relay in front of Ollama, one tool call per framework, installed versions
+LangGraph 1.2.19 with langchain-ollama 1.1.0, Strands 1.63.0, CrewAI 1.15.34): LangGraph and Strands
+use Ollama's own API and sent every setting. CrewAI uses Ollama's OpenAI-style API, sent temperature,
+seed and `reasoning_effort: "none"` (tested: that does turn thinking off), but cannot send `num_ctx`;
+the API ignores it even when added to the body, so the model loaded at 4096. Through the derived
+model, the same OpenAI-style API loads at 16384. It shares `qwen3:8b`'s files, so no extra disk.
+
+Rejected: `OLLAMA_CONTEXT_LENGTH=16384` on the server (no new name, but it holds only if Ollama is
+always started that way, and CrewAI would fall back to 4096 without warning); routing CrewAI through
+its LiteLLM extra to reach Ollama's own API (not CrewAI's default path, so the tutorial would teach an
+unusual setup); leaving CrewAI at 4096 and documenting it (CrewAI would fail long runs because of
+setup, not the framework).
+
+## 13. One notebook outline for all three tutorials
+
+Seven component notebooks with the same names and order in every tutorial (`TUTORIAL_OUTLINE.md`),
+following the crash course's six framework ideas with the model and tools taught first, then the
+capstones. Each ends with a "How the others do this" note.
+
+Rejected: an outline per framework following each one's own docs (closer to how each framework
+teaches itself, but readers could not compare notebook by notebook, and the comparison would have to
+map three different structures).
+
+## 14. No real order ID in tool descriptions
+
+The shared `lookup_order` description said "(for example A1001)". A1001 is a real order, and in
+LangGraph notebook 04 an agent with no memory copied that ID and answered confidently about the wrong
+order. The description now reads "Look up an order by the order ID from the conversation; never guess
+one." After the change the same agent still guessed once (an invented `order_12345`), but the tool
+answered `order_not_found` and the agent asked for the ID: a guess now fails visibly instead of quietly
+succeeding.
+
+Rejected: an example ID that does not exist, such as "A0000" (also safe, but it still invites copying
+an ID, where the new text tells the model where the ID must come from).
+
 ## Open
 
 - Who edits `contracts/`. Recommended: one neutral owner, framework sessions only read and request

@@ -45,20 +45,10 @@ Tool calls may happen in any step (a revision may search again), as long as the 
 
 ## 2. Model
 
-Shared with ShipFast (DECISIONS.md 4, 10 and 11). Everything runs locally; there is no API key.
-
-- Model **`qwen3:8b`**, served by **Ollama** at `http://localhost:11434` (override with `OLLAMA_HOST`).
-- `MODEL` env var overrides the model, written the plain Ollama way (`qwen3:8b`). Each build adds its
-  framework's prefix itself (for example LangChain `ollama:` or LiteLLM `ollama_chat/`); check the
-  exact format against the installed version.
-- Every build sends the same options, explicitly, on every call:
-  - `temperature`: 0
-  - `seed`: 42
-  - `num_ctx`: 16384. Ollama's own default on the reference Mac is 4096, which silently breaks long
-    tool-calling runs. Do not rely on the default.
-  - thinking off (`think: false` in Ollama's API, or the framework's equivalent).
-- If a framework cannot pass one of these options, the build says so in its notebook and in the
-  comparison. It does not work around it silently.
+Identical to ShipFast SPEC.md section 2 (DECISIONS.md 4, 10, 11 and 12), which is the single
+statement of it. In short: model **`qwen3-agents`** on Ollama (`qwen3:8b` with `num_ctx` 16384,
+`temperature` 0 and `seed` 42 written in by `contracts/ollama/Modelfile`), thinking off on every call,
+and `agent_contracts.harness.verify_model()` at the top of every runner. No API key.
 
 ## 3. Tools (same names, arguments and return shapes in all builds)
 
@@ -146,7 +136,7 @@ Write results to `results/research/<framework>.json` at the repo root:
 {
   "framework": "langgraph | crewai | strands",
   "framework_version": "x.y.z",
-  "model": "qwen3:8b",
+  "model": "qwen3-agents",
   "run_at": "ISO timestamp",
   "questions": [
     {
