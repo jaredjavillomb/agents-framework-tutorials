@@ -1,0 +1,175 @@
+{
+ "model": "qwen3-agents",
+ "stream": true,
+ "options": {
+  "num_ctx": 16384,
+  "temperature": 0.0,
+  "seed": 42
+ },
+ "messages": [
+  {
+   "role": "system",
+   "content": "You are ShipFast's support specialist. Work in this order:\n1. Look up the order with lookup_order (it gives the order total) and, when delivery status or dates matter, track_shipment.\n2. Read the relevant policy with search_policy before you decide anything.\n3. Act on the policy: issue_refund for the full order total when the policy allows a refund; ask the customer for anything the policy requires that is missing; decline politely when the policy does not allow it; escalate_to_human only when the policy says to, or when a supervisor rejects a refund.\nNever guess amounts, dates or policy, and never refund more than the order total.\nFinish with a short reply to the customer."
+  },
+  {
+   "role": "user",
+   "content": "Order A1003 is more than a week late. Please cancel it and refund me."
+  },
+  {
+   "role": "assistant",
+   "tool_calls": [
+    {
+     "function": {
+      "name": "lookup_order",
+      "arguments": {
+       "order_id": "A1003"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "content": "{\"order_id\": \"A1003\", \"customer\": \"Ana Cruz\", \"item\": \"Espresso Machine\", \"total\": 250.0, \"status\": \"delayed\", \"carrier\": \"LBC\", \"ordered_on\": \"2026-10-18\", \"eta\": \"2026-10-24\", \"delivered_on\": null}"
+  },
+  {
+   "role": "assistant",
+   "tool_calls": [
+    {
+     "function": {
+      "name": "track_shipment",
+      "arguments": {
+       "order_id": "A1003"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "content": "{\"order_id\": \"A1003\", \"status\": \"delayed\", \"carrier\": \"LBC\", \"eta\": \"2026-10-24\", \"delivered_on\": null, \"tracking\": [{\"date\": \"2026-10-18\", \"event\": \"Order packed at Manila warehouse\"}, {\"date\": \"2026-10-20\", \"event\": \"Picked up by LBC\"}, {\"date\": \"2026-10-23\", \"event\": \"Held at Davao hub: backlog\"}]}"
+  },
+  {
+   "role": "assistant",
+   "tool_calls": [
+    {
+     "function": {
+      "name": "search_policy",
+      "arguments": {
+       "query": "refund for delayed orders"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "content": "{\"today\": \"2026-11-01\", \"sections\": [{\"id\": \"P1\", \"title\": \"Lost packages\", \"text\": \"If the carrier status is `lost`, the customer is entitled to a full refund of the order total. No further checks are needed.\"}, {\"id\": \"P2\", \"title\": \"Delayed packages\", \"text\": \"A package is \\\"late\\\" when today is more than 5 days past its ETA.\\n- Late, and the customer asks to cancel or for a refund: issue a full refund of the order total.\\n- Late, and the customer does not ask for a refund: apologise, give the latest tracking event, and offer a 15% store credit.\\n- Not late (5 days or fewer past ETA, or ETA in the future): no refund. Give the latest tracking event and the ETA.\"}, {\"id\": \"P3\", \"title\": \"Damaged items\", \"text\": \"Damage must be reported within 7 days of the delivery date, and the customer must provide a photo.\\n- No photo yet: ask the customer for a photo. Do not refund.\\n- Photo provided and within 7 days: issue a full refund of the order total.\\n- Reported more than 7 days after delivery: not eligible; offer to escalate.\"}, {\"id\": \"P4\", \"title\": \"Refund window\", \"text\": \"No refunds for orders delivered more than 30 days ago, for any reason. Politely decline and offer to escalate to a human agent.\"}, {\"id\": \"P5\", \"title\": \"Approval threshold\", \"text\": \"Any refund **over $100.00** must be approved by a human supervisor before it is issued.\\n- Approved: issue the refund.\\n- Rejected: do not refund; escalate to a human agent and tell the customer a specialist will follow up.\"}, {\"id\": \"P6\", \"title\": \"Unknown orders\", \"text\": \"If an order ID is not found, ask the customer to double-check the order ID. Never guess.\"}, {\"id\": \"P7\", \"title\": \"Scope\", \"text\": \"Only handle orders, deliveries, refunds and complaints. Politely decline anything else.\"}]}"
+  }
+ ],
+ "tools": [
+  {
+   "type": "function",
+   "function": {
+    "name": "lookup_order",
+    "description": "Look up an order by the order ID from the conversation; never guess one. Returns the order without tracking events.",
+    "parameters": {
+     "type": "object",
+     "required": [
+      "order_id"
+     ],
+     "properties": {
+      "order_id": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "track_shipment",
+    "description": "Get an order's shipment status, carrier, ETA, delivery date and tracking events.",
+    "parameters": {
+     "type": "object",
+     "required": [
+      "order_id"
+     ],
+     "properties": {
+      "order_id": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "search_policy",
+    "description": "Search the ShipFast refund and complaint policy. Returns the matching sections (all if none match).",
+    "parameters": {
+     "type": "object",
+     "required": [
+      "query"
+     ],
+     "properties": {
+      "query": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "issue_refund",
+    "description": "Issue a refund for an order. The amount cannot exceed the order total minus anything already refunded.",
+    "parameters": {
+     "type": "object",
+     "required": [
+      "order_id",
+      "amount",
+      "reason"
+     ],
+     "properties": {
+      "order_id": {
+       "type": "string"
+      },
+      "amount": {
+       "type": "number"
+      },
+      "reason": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "escalate_to_human",
+    "description": "Open a ticket for a human agent. Use an empty order_id if no order is involved.",
+    "parameters": {
+     "type": "object",
+     "required": [
+      "order_id",
+      "summary"
+     ],
+     "properties": {
+      "order_id": {
+       "type": "string"
+      },
+      "summary": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  }
+ ],
+ "think": false
+}

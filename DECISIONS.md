@@ -178,9 +178,10 @@ is `escalated`, a pause at the approval gate is `pending_approval`, an out-of-sc
 `declined`, as a small structured call, and it writes the customer reply. The derivation is one shared
 function in `contracts/`, so the rule is identical in every build.
 
-Evidence: in the component notebooks of all three frameworks the 8B model reported outcomes unreliably
-when asked to fill in a Resolution itself: it skipped the report, claimed refunds that never happened
-($150 on a $45 order) and invented ticket numbers.
+Evidence: in the LangGraph and CrewAI component notebooks the 8B model reported outcomes unreliably when
+asked to fill in a Resolution itself: it skipped the report, claimed refunds that never happened ($150 on
+a $45 order) and invented ticket numbers. (Corrected after the comparison: in Strands' notebook 03 the one
+Resolution, asked for after the tools ran, was right; one example is too few to rely on.)
 
 Rejected: the model fills in the whole Resolution, as most framework tutorials do. Simpler, and it shows
 each framework's structured output, but scores would mostly measure the model's form-filling mistakes
