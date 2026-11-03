@@ -1,0 +1,45 @@
+"""ShipFast's approval gate (SPEC.md section 3, policy P5) as a Strands hook.
+
+A hook on `BeforeToolCallEvent` runs before every tool call. For an `issue_refund` over $100.00 it calls
+`event.interrupt(...)`, which stops the agent and returns the interrupt in the result, before the tool
+runs. The caller resumes by calling the agent with an `interruptResponse`; this time `interrupt()` returns
+the supervisor's decision. Approve: the refund runs. Reject: `cancel_tool` skips it and hands the model a
+rejection, telling it to escalate.
+"""
+
+from __future__ import annotations
+
+import json
+
+from strands.hooks import BeforeToolCallEvent, HookProvider, HookRegistry
+
+APPROVAL_THRESHOLD = 100.00  # policy P5: refunds over $100.00 need a supervisor
+
+
+class RefundApproval(HookProvider):
+    def register_hooks(self, registry: HookRegistry, **kwargs) -> None:
+        registry.add_callback(BeforeToolCallEvent, self.check)
+
+    def check(self, event: BeforeToolCallEvent) -> None:
+        call = event.tool_use
+        if call["name"] != "issue_refund":
+            return
+        args = call.get("input") or {}
+        try:
+            amount = float(args.get("amount"))
+        except (TypeError, ValueError):
+            return  # the shared tool rejects a non-numeric amount itself
+        if amount <= APPROVAL_THRESHOLD:
+            return
+        decision = event.interrupt("refund_approval", reason={
+            "order_id": args.get("order_id"), "amount": amount, "reason": args.get("reason"),
+            "question": f"Approve a refund of ${amount:.2f}? Resume with 'approve' or 'reject'."})
+        if decision != "approve":
+            event.cancel_tool = json.dumps({
+                "status": "rejected_by_supervisor", "order_id": args.get("order_id"), "amount": amount,
+                "next_step": "Do not refund. Call escalate_to_human, then tell the customer a specialist will follow up."})
+
+
+def resume_with(result, decision: str) -> list[dict]:
+    """The prompt that resumes an interrupted agent with the same decision for each pending interrupt."""
+    return [{"interruptResponse": {"interruptId": i.id, "response": decision}} for i in result.interrupts]
