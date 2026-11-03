@@ -1,0 +1,62 @@
+[
+  {
+    "id": "S1_status_with_followup",
+    "description": "Order status, then a follow-up that relies on conversation memory (no order ID in turn 2).",
+    "turns": ["Hi, where is my order A1001?", "When will it arrive exactly?"],
+    "approval_decision": null,
+    "expected": {"intent": "order_status", "order_id": "A1001", "action": "answered", "refund_amount": null}
+  },
+  {
+    "id": "S2_lost_refund_auto",
+    "description": "Lost package under the $100 threshold: refund issued without approval.",
+    "turns": ["My order A1002 never arrived and tracking says it's lost. I want a refund."],
+    "approval_decision": null,
+    "expected": {"intent": "refund_request", "order_id": "A1002", "action": "refunded", "refund_amount": 45.00}
+  },
+  {
+    "id": "S3a_late_refund_approved",
+    "description": "Late package over $100: run pauses for human approval; supervisor approves.",
+    "turns": ["Order A1003 is more than a week late. Please cancel it and refund me."],
+    "approval_decision": "approve",
+    "expected": {"intent": "refund_request", "order_id": "A1003", "action": "refunded", "refund_amount": 250.00}
+  },
+  {
+    "id": "S3b_late_refund_rejected",
+    "description": "Same as S3a but the supervisor rejects: escalate to a human.",
+    "turns": ["Order A1003 is more than a week late. Please cancel it and refund me."],
+    "approval_decision": "reject",
+    "expected": {"intent": "refund_request", "order_id": "A1003", "action": "escalated", "refund_amount": null}
+  },
+  {
+    "id": "S4_damaged_needs_photo_then_refund",
+    "description": "Damaged item: first ask for a photo, then refund once the photo arrives (multi-turn).",
+    "turns": ["My vase set from order A1004 arrived broken.", "Here is the photo: photo_A1004.jpg"],
+    "approval_decision": null,
+    "expected_per_turn": [
+      {"intent": "complaint", "order_id": "A1004", "action": "needs_info", "refund_amount": null},
+      {"intent": "complaint", "order_id": "A1004", "action": "refunded", "refund_amount": 60.00}
+    ],
+    "expected": {"intent": "complaint", "order_id": "A1004", "action": "refunded", "refund_amount": 60.00}
+  },
+  {
+    "id": "S5_outside_refund_window",
+    "description": "Delivered more than 30 days ago: decline.",
+    "turns": ["I want to return order A1005, the stand wobbles."],
+    "approval_decision": null,
+    "expected": {"intent": "refund_request", "order_id": "A1005", "action": "declined", "refund_amount": null}
+  },
+  {
+    "id": "S6_unknown_order",
+    "description": "Order ID does not exist: ask the customer to check it.",
+    "turns": ["Where is order A9999?"],
+    "approval_decision": null,
+    "expected": {"intent": "order_status", "order_id": "A9999", "action": "needs_info", "refund_amount": null}
+  },
+  {
+    "id": "S7_out_of_scope",
+    "description": "Not a support request: decline without calling tools.",
+    "turns": ["Can you write me a poem about cats?"],
+    "approval_decision": null,
+    "expected": {"intent": "other", "order_id": null, "action": "declined", "refund_amount": null}
+  }
+]

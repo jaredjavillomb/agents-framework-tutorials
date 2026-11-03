@@ -1,0 +1,212 @@
+[
+  {
+    "id": "F01",
+    "title": "Veltara Aquatech company profile",
+    "url": "https://directory.example/companies/veltara-aquatech",
+    "published": "2026-03-02",
+    "snippet": "Veltara Aquatech designs and builds solar-powered water purification units for towns and islands without reliable clean water. Its founders, Dr. Rosalind Abaya (chief executive) and Tomas Lindqvist (chief technology officer), founded the company in 2014 in Iloilo City, where its headquarters remain. Products are sold under the TidePure name."
+  },
+  {
+    "id": "F02",
+    "title": "Veltara grows team to 350 employees ahead of Cebu factory opening",
+    "url": "https://news.example/business/veltara-350-employees",
+    "published": "2026-03-18",
+    "snippet": "Veltara Aquatech now has 350 employees, up from about 260 a year ago, as it hires production staff for its new factory in Mandaue, Cebu. Chief executive Rosalind Abaya said the headcount covers engineering, manufacturing, installation crews and after-sales service."
+  },
+  {
+    "id": "F03",
+    "title": "Veltara Aquatech: 200 employees and counting",
+    "url": "https://startupwatch.example/2023/veltara-200-employees",
+    "published": "2023-06-05",
+    "snippet": "Iloilo water startup Veltara Aquatech has reached 200 employees and has TidePure units running in 9 provinces. The founders say they plan to keep hiring steadily as demand from local governments grows."
+  },
+  {
+    "id": "F04",
+    "title": "Veltara Aquatech 2025 annual report highlights",
+    "url": "https://investors.example/veltara/annual-report-2025",
+    "published": "2026-04-10",
+    "snippet": "For FY2025 Veltara Aquatech reported revenue of PHP 1.56 billion and a gross margin of 34 percent. By the end of 2025 the company had deployed 2,800 TidePure units across 14 provinces. Most revenue came from local government units and water districts."
+  },
+  {
+    "id": "F05",
+    "title": "Veltara posts FY2024 results",
+    "url": "https://news.example/business/veltara-fy2024-results",
+    "published": "2025-04-08",
+    "snippet": "Veltara Aquatech reported FY2024 revenue of PHP 1.20 billion, helped by larger orders from water districts in the Visayas. The company said it would use the year's results to support its next funding round."
+  },
+  {
+    "id": "F06",
+    "title": "Veltara closes USD 18 million Series B led by Cordillera Ventures",
+    "url": "https://news.example/funding/veltara-series-b",
+    "published": "2025-02-20",
+    "snippet": "Veltara Aquatech has raised USD 18 million in a Series B round led by Cordillera Ventures, announced in February 2025. The money will fund a second factory and a larger installation team."
+  },
+  {
+    "id": "F07",
+    "title": "How Veltara funded its first years",
+    "url": "https://startupwatch.example/2021/veltara-series-a",
+    "published": "2021-09-14",
+    "snippet": "After a seed round from its founders and local investors, Veltara Aquatech raised a USD 5 million Series A in 2021 led by the Panay Angel Network. The funds paid for the first TidePure production line in Iloilo City."
+  },
+  {
+    "id": "F08",
+    "title": "Veltara opens Mandaue factory in Cebu",
+    "url": "https://news.example/business/veltara-mandaue-factory",
+    "published": "2026-08-21",
+    "snippet": "Veltara Aquatech opened its second factory in Mandaue, Cebu, in August 2026. The new plant has a production capacity of 1,200 TidePure units per year. The original Iloilo City plant, with a capacity of 800 units per year, stays in full operation."
+  },
+  {
+    "id": "F09",
+    "title": "Inside Veltara's Iloilo plant",
+    "url": "https://manufacturing.example/features/veltara-iloilo-plant",
+    "published": "2024-11-02",
+    "snippet": "On the factory floor in Iloilo City, Veltara assembles TidePure purifiers from locally sourced frames and imported membranes. The plant has a capacity of 800 units per year and runs two shifts."
+  },
+  {
+    "id": "F10",
+    "title": "TidePure 40 product sheet",
+    "url": "https://veltara.example/products/tidepure-40",
+    "published": "2025-06-01",
+    "snippet": "The TidePure 40 is Veltara's flagship purifier. It produces up to 4,000 liters of drinking water per day and uses 1.8 kWh of solar energy per 1,000 liters. Independent lab tests show it removes 99.99 percent of bacteria. List price: PHP 385,000."
+  },
+  {
+    "id": "F11",
+    "title": "TidePure Mini product sheet",
+    "url": "https://veltara.example/products/tidepure-mini",
+    "published": "2025-06-01",
+    "snippet": "The TidePure Mini is a portable purifier for households, clinics and disaster response. It produces up to 600 liters of drinking water per day from a single folding solar panel. List price: PHP 48,000."
+  },
+  {
+    "id": "F12",
+    "title": "Veltara recalls 120 TidePure Mini units over UV lamp seal",
+    "url": "https://news.example/business/veltara-tidepure-mini-recall",
+    "published": "2026-01-27",
+    "snippet": "Veltara Aquatech is recalling 120 TidePure Mini units after finding a faulty seal on the UV lamp that could let moisture in. The recall was announced in January 2026. No injuries have been reported, and owners will receive a replacement lamp assembly."
+  },
+  {
+    "id": "F13",
+    "title": "Veltara and Bayan Clean Water Alliance to install 500 units in Mindanao",
+    "url": "https://news.example/development/veltara-bayan-mindanao",
+    "published": "2026-05-12",
+    "snippet": "Veltara Aquatech and the Bayan Clean Water Alliance signed a partnership to install 500 TidePure units in Mindanao by 2027. The alliance will choose the sites and train local operators; Veltara will supply and maintain the units."
+  },
+  {
+    "id": "F14",
+    "title": "Rosalind Abaya on scaling clean water",
+    "url": "https://podcast.example/episodes/rosalind-abaya",
+    "published": "2026-02-15",
+    "snippet": "In an interview, Veltara chief executive Rosalind Abaya talks about moving from pilot projects to provincial contracts, why after-sales service matters more than the hardware, and how the team decides where to install next."
+  },
+  {
+    "id": "F15",
+    "title": "Typhoon response: Veltara units sent to Samar",
+    "url": "https://news.example/disaster/veltara-samar-typhoon",
+    "published": "2025-11-30",
+    "snippet": "Veltara Aquatech donated 60 TidePure Mini units to towns in Samar after the typhoon, working with the provincial disaster office. Each unit was set up within a day of arriving."
+  },
+  {
+    "id": "F16",
+    "title": "Veltara wins regional innovation award",
+    "url": "https://awards.example/2024/visayas-innovation",
+    "published": "2024-03-08",
+    "snippet": "Veltara Aquatech won the Visayas Innovation Award for its solar purification design. The judges praised its low maintenance needs and its use of local suppliers."
+  },
+  {
+    "id": "F17",
+    "title": "Tomas Lindqvist on solar efficiency",
+    "url": "https://engineering.example/interviews/tomas-lindqvist",
+    "published": "2025-09-09",
+    "snippet": "Veltara chief technology officer Tomas Lindqvist explains how a new pump controller and better panels brought the TidePure 40 down to 1.8 kWh per 1,000 liters, from 2.4 kWh on the first version."
+  },
+  {
+    "id": "F18",
+    "title": "AquaNova Systems raises USD 25 million Series C",
+    "url": "https://news.example/funding/aquanova-series-c",
+    "published": "2025-07-14",
+    "snippet": "AquaNova Systems, a maker of grid-powered water filters, raised USD 25 million in a Series C round. AquaNova plans to expand into Vietnam and Indonesia."
+  },
+  {
+    "id": "F19",
+    "title": "AquaNova Systems headcount reaches 900 employees",
+    "url": "https://news.example/business/aquanova-900-employees",
+    "published": "2026-02-02",
+    "snippet": "AquaNova Systems now has 900 employees across its Manila headquarters and three regional offices, the company said, after a year of rapid hiring."
+  },
+  {
+    "id": "F20",
+    "title": "Philippine water purification market outlook 2026",
+    "url": "https://research.example/reports/ph-water-purification-2026",
+    "published": "2026-01-10",
+    "snippet": "The Philippine market for water purification equipment is estimated at PHP 18 billion in 2026. Off-grid and solar systems are the fastest-growing segment, driven by island provinces and disaster preparedness programmes."
+  },
+  {
+    "id": "F21",
+    "title": "Solar water purifiers explained",
+    "url": "https://explainers.example/solar-water-purifiers",
+    "published": "2024-05-20",
+    "snippet": "A solar water purifier combines panels, a battery, a pump and a treatment stage such as membranes or ultraviolet light. The main design trade-offs are daily output, energy use per liter and maintenance."
+  },
+  {
+    "id": "F22",
+    "title": "Mindanao's clean water gap",
+    "url": "https://development.example/analysis/mindanao-water",
+    "published": "2025-10-03",
+    "snippet": "Many rural barangays in Mindanao still lack piped drinking water. Development groups say small decentralised purifiers can fill the gap faster than new pipelines."
+  },
+  {
+    "id": "F23",
+    "title": "Bayan Clean Water Alliance annual review",
+    "url": "https://bayanwater.example/annual-review-2026",
+    "published": "2026-06-30",
+    "snippet": "The Bayan Clean Water Alliance reports on its year, including a new partnership with Veltara Aquatech to install 500 purification units in Mindanao by 2027."
+  },
+  {
+    "id": "F24",
+    "title": "Cebu manufacturing incentives",
+    "url": "https://policy.example/cebu-manufacturing-incentives",
+    "published": "2025-12-12",
+    "snippet": "Cebu's investment office offers tax holidays and faster permits for new factories in Mandaue and Lapu-Lapu, aimed at electronics, food processing and clean technology firms."
+  },
+  {
+    "id": "F25",
+    "title": "UV lamp safety in water treatment",
+    "url": "https://explainers.example/uv-lamp-safety",
+    "published": "2026-02-05",
+    "snippet": "Ultraviolet lamps disinfect water without chemicals, but the lamp housing must be sealed against moisture. Manufacturers issue recalls when seals fail, because a wet lamp can stop working without warning."
+  },
+  {
+    "id": "F26",
+    "title": "AquaNova recalls 300 filters",
+    "url": "https://news.example/business/aquanova-recall",
+    "published": "2025-08-19",
+    "snippet": "AquaNova Systems recalled 300 countertop filters after reports of cracked housings. AquaNova said customers would receive replacements free of charge."
+  },
+  {
+    "id": "F27",
+    "title": "Iloilo's startup ecosystem",
+    "url": "https://startupwatch.example/2023/iloilo-ecosystem",
+    "published": "2023-11-11",
+    "snippet": "Iloilo City has become a hub for hardware startups. One of the best known, Veltara Aquatech, was founded in the city in 2014 and still builds its purifiers there."
+  },
+  {
+    "id": "F28",
+    "title": "Veltara price list 2026",
+    "url": "https://veltara.example/pricing-2026",
+    "published": "2026-01-05",
+    "snippet": "Veltara Aquatech list prices for 2026: TidePure 40, PHP 385,000 per unit; TidePure Mini, PHP 48,000 per unit. Prices include delivery within the Philippines; installation is quoted separately."
+  },
+  {
+    "id": "F29",
+    "title": "Cordillera Ventures portfolio",
+    "url": "https://cordilleravc.example/portfolio",
+    "published": "2025-12-01",
+    "snippet": "Cordillera Ventures backs climate and infrastructure companies in Southeast Asia. Portfolio companies include Veltara Aquatech, where Cordillera led the USD 18 million Series B in 2025."
+  },
+  {
+    "id": "F30",
+    "title": "Water purifier energy benchmarks",
+    "url": "https://research.example/reports/purifier-energy-benchmarks",
+    "published": "2025-03-03",
+    "snippet": "Across the off-grid purifiers we tested, the average energy use was 3.0 kWh per 1,000 liters. The most efficient systems use solar pumps with variable-speed controllers."
+  }
+]

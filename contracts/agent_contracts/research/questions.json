@@ -1,0 +1,121 @@
+[
+  {
+    "id": "Q01_headcount",
+    "question": "How many employees does Veltara Aquatech have now?",
+    "expected_facts": [
+      {"id": "headcount", "aliases": ["350"]}
+    ],
+    "must_not_contain": ["200"],
+    "uses_calculator": false,
+    "notes": "F02 (2026) says 350; the stale F03 (2023) says 200. Both match an employees query, so the agent has to prefer the newer source."
+  },
+  {
+    "id": "Q02_founding",
+    "question": "When and where was Veltara Aquatech founded, and who founded it?",
+    "expected_facts": [
+      {"id": "year", "aliases": ["2014"]},
+      {"id": "city", "aliases": ["iloilo"]},
+      {"id": "founder_ceo", "aliases": ["rosalind abaya", "abaya"]},
+      {"id": "founder_cto", "aliases": ["tomas lindqvist", "lindqvist"]}
+    ],
+    "must_not_contain": [],
+    "uses_calculator": false,
+    "notes": "F01, supported by F27."
+  },
+  {
+    "id": "Q03_revenue_growth",
+    "question": "By what percentage did Veltara Aquatech's revenue grow from FY2024 to FY2025?",
+    "expected_facts": [
+      {"id": "fy2024", "aliases": ["1.20 billion", "1.2 billion", "1200 million"]},
+      {"id": "fy2025", "aliases": ["1.56 billion", "1560 million"]},
+      {"id": "growth", "aliases": ["30%", "30 percent", "30.0%", "30 per cent"]}
+    ],
+    "must_not_contain": [],
+    "uses_calculator": true,
+    "notes": "FY2025 from F04, FY2024 from F05; (1.56 - 1.20) / 1.20 = 30%. Needs two searches and one calculation."
+  },
+  {
+    "id": "Q04_series_b",
+    "question": "How much did Veltara Aquatech raise in its Series B, when, and who led the round?",
+    "expected_facts": [
+      {"id": "amount", "aliases": ["18 million", "18m", "18.0 million"]},
+      {"id": "lead", "aliases": ["cordillera ventures", "cordillera"]},
+      {"id": "date", "aliases": ["february 2025", "feb 2025", "2025-02"]}
+    ],
+    "must_not_contain": [],
+    "uses_calculator": false,
+    "notes": "F06, supported by F29. F07 (the USD 5 million Series A) and F18 (AquaNova's Series C) are distractors."
+  },
+  {
+    "id": "Q05_capacity",
+    "question": "Now that the Mandaue factory is open, what is Veltara Aquatech's total yearly production capacity?",
+    "expected_facts": [
+      {"id": "total", "aliases": ["2000"]},
+      {"id": "mandaue", "aliases": ["1200"]},
+      {"id": "iloilo", "aliases": ["800"]}
+    ],
+    "must_not_contain": [],
+    "uses_calculator": true,
+    "notes": "F08 gives both plants (1,200 + 800 = 2,000 units a year); F09 confirms Iloilo."
+  },
+  {
+    "id": "Q06_daily_energy",
+    "question": "How much solar energy does a TidePure 40 use in a day when running at its full daily output?",
+    "expected_facts": [
+      {"id": "output", "aliases": ["4000 liters", "4000 litres", "4000 l"]},
+      {"id": "rate", "aliases": ["1.8 kwh"]},
+      {"id": "daily", "aliases": ["7.2 kwh"]}
+    ],
+    "must_not_contain": [],
+    "uses_calculator": true,
+    "notes": "F10: 4,000 liters a day at 1.8 kWh per 1,000 liters = 7.2 kWh. F17 mentions the older 2.4 kWh figure as history, and F30 the 3.0 kWh industry average."
+  },
+  {
+    "id": "Q07_deployment",
+    "question": "How many TidePure units has Veltara Aquatech deployed, and in how many provinces?",
+    "expected_facts": [
+      {"id": "units", "aliases": ["2800"]},
+      {"id": "provinces", "aliases": ["14 provinces", "fourteen provinces", "14"]}
+    ],
+    "must_not_contain": ["9 provinces", "nine provinces"],
+    "uses_calculator": false,
+    "notes": "F04 (end of 2025). The stale F03 says 9 provinces."
+  },
+  {
+    "id": "Q08_recall",
+    "question": "Which Veltara product was recalled, how many units, and why?",
+    "expected_facts": [
+      {"id": "product", "aliases": ["tidepure mini"]},
+      {"id": "units", "aliases": ["120"]},
+      {"id": "cause", "aliases": ["uv lamp", "ultraviolet lamp"]},
+      {"id": "date", "aliases": ["january 2026", "jan 2026", "2026-01"]}
+    ],
+    "must_not_contain": ["300"],
+    "uses_calculator": false,
+    "notes": "F12. F26 (AquaNova's recall of 300 filters) is a distractor."
+  },
+  {
+    "id": "Q09_mindanao",
+    "question": "What is Veltara Aquatech's plan for Mindanao: with whom, how many units, and by when?",
+    "expected_facts": [
+      {"id": "partner", "aliases": ["bayan clean water alliance", "bayan"]},
+      {"id": "units", "aliases": ["500"]},
+      {"id": "year", "aliases": ["2027"]}
+    ],
+    "must_not_contain": [],
+    "uses_calculator": false,
+    "notes": "F13, supported by F23."
+  },
+  {
+    "id": "Q10_order_cost",
+    "question": "At 2026 list prices, what would 3 TidePure 40 units and 10 TidePure Mini units cost in total?",
+    "expected_facts": [
+      {"id": "price_40", "aliases": ["385000"]},
+      {"id": "price_mini", "aliases": ["48000"]},
+      {"id": "total", "aliases": ["1635000", "1.635 million"]}
+    ],
+    "must_not_contain": [],
+    "uses_calculator": true,
+    "notes": "F28 (also F10 and F11): 3 x 385,000 + 10 x 48,000 = 1,635,000 PHP."
+  }
+]

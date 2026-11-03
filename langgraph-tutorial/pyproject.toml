@@ -1,0 +1,17 @@
+[project]
+name = "langgraph-tutorial"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "agent-contracts",
+    "langgraph>=1.2.19",
+    "langchain>=1.4.8",
+    "langchain-core>=1.7.4",
+    "langchain-anthropic>=1.7.9",
+    "ipykernel",
+    "jupyter",
+    "python-dotenv",
+]
+
+[tool.uv.sources]
+agent-contracts = { path = "../contracts", editable = true }

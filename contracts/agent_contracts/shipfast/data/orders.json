@@ -1,0 +1,52 @@
+{
+  "A1001": {
+    "order_id": "A1001", "customer": "Maria Santos", "item": "Wireless Headphones",
+    "total": 89.00, "status": "in_transit", "carrier": "LBC",
+    "ordered_on": "2026-10-28", "eta": "2026-11-04", "delivered_on": null,
+    "tracking": [
+      {"date": "2026-10-28", "event": "Order packed at Manila warehouse"},
+      {"date": "2026-10-30", "event": "Picked up by LBC"},
+      {"date": "2026-10-31", "event": "Arrived at Cebu sorting hub"}
+    ]
+  },
+  "A1002": {
+    "order_id": "A1002", "customer": "John Reyes", "item": "Running Shoes",
+    "total": 45.00, "status": "lost", "carrier": "J&T",
+    "ordered_on": "2026-10-10", "eta": "2026-10-15", "delivered_on": null,
+    "tracking": [
+      {"date": "2026-10-10", "event": "Order packed at Manila warehouse"},
+      {"date": "2026-10-12", "event": "Picked up by J&T"},
+      {"date": "2026-10-14", "event": "Departed Quezon City hub"},
+      {"date": "2026-10-25", "event": "Carrier declared package lost"}
+    ]
+  },
+  "A1003": {
+    "order_id": "A1003", "customer": "Ana Cruz", "item": "Espresso Machine",
+    "total": 250.00, "status": "delayed", "carrier": "LBC",
+    "ordered_on": "2026-10-18", "eta": "2026-10-24", "delivered_on": null,
+    "tracking": [
+      {"date": "2026-10-18", "event": "Order packed at Manila warehouse"},
+      {"date": "2026-10-20", "event": "Picked up by LBC"},
+      {"date": "2026-10-23", "event": "Held at Davao hub: backlog"}
+    ]
+  },
+  "A1004": {
+    "order_id": "A1004", "customer": "Leo Garcia", "item": "Ceramic Vase Set",
+    "total": 60.00, "status": "delivered", "carrier": "Ninja Van",
+    "ordered_on": "2026-10-24", "eta": "2026-10-30", "delivered_on": "2026-10-30",
+    "tracking": [
+      {"date": "2026-10-24", "event": "Order packed at Manila warehouse"},
+      {"date": "2026-10-26", "event": "Picked up by Ninja Van"},
+      {"date": "2026-10-30", "event": "Delivered, signed by L. Garcia"}
+    ]
+  },
+  "A1005": {
+    "order_id": "A1005", "customer": "Bea Lim", "item": "Laptop Stand",
+    "total": 35.00, "status": "delivered", "carrier": "J&T",
+    "ordered_on": "2026-09-08", "eta": "2026-09-15", "delivered_on": "2026-09-15",
+    "tracking": [
+      {"date": "2026-09-08", "event": "Order packed at Manila warehouse"},
+      {"date": "2026-09-15", "event": "Delivered, left at front desk"}
+    ]
+  }
+}

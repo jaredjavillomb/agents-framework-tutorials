@@ -1,0 +1,14 @@
+[project]
+name = "crewai-tutorial"
+version = "0.1.0"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    "agent-contracts",
+    "crewai",
+    "ipykernel",
+    "jupyter",
+    "python-dotenv",
+]
+
+[tool.uv.sources]
+agent-contracts = { path = "../contracts", editable = true }

@@ -1,0 +1,13 @@
+[project]
+name = "agent-contracts"
+version = "0.1.0"
+description = "Framework-neutral specs, data, tools and metrics shared by every tutorial build."
+requires-python = ">=3.12"
+dependencies = ["pydantic>=2"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agent_contracts"]
