@@ -90,14 +90,21 @@ thread's intent unless the customer clearly changes topic.
 }
 ```
 
+- **Code builds the Resolution from what happened** (DECISIONS.md 16), with the shared
+  `shipfast.resolution.derive_resolution`: out-of-scope triage is `declined`; a pause at the approval gate
+  is `pending_approval`; a refund in the ledger this turn is `refunded` with its amount; a ticket opened
+  this turn is `escalated` with its id; otherwise the model chooses `answered`, `needs_info` or `declined`
+  (the shared `Outcome` model and `prompts.OUTCOME`). `intent` and `order_id` come from triage, which uses
+  `prompts.TRIAGE`. The model writes only the `reply`.
 - `refunded` only if `issue_refund` actually succeeded (check the ledger, not the LLM's claim).
 - `pending_approval` is what a turn returns while it is paused waiting for the supervisor.
 - `needs_info`: we asked the customer for something (photo, correct order ID).
 
 ## 6. Test runner and results
 
-Each build ships a runner (`run_scenarios.py` or a notebook cell) that, for every scenario in
-`scenarios.json`:
+Each build's `run_eval.py` calls the shared `agent_contracts.harness.runners.run_shipfast_eval` with a
+small adapter (start a conversation, send a turn, resume a paused turn). For every scenario in
+`scenarios.json` the runner:
 
 1. resets the ledger and starts a fresh thread/memory,
 2. feeds each turn in order on the same thread,

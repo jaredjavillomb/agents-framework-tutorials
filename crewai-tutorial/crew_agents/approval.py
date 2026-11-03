@@ -28,10 +28,10 @@ from crewai.tools import tool
 from pydantic import BaseModel
 
 from agent_contracts.shipfast import tools as shipfast
+from agent_contracts.shipfast.tools import APPROVAL_THRESHOLD  # policy P5, shared by all builds
 from crew_agents.llm import make_llm
 from crew_agents.prompts import BACKSTORY, GOAL, ROLE
 
-APPROVAL_THRESHOLD = 100.00  # policy P5: refunds over $100.00 need a supervisor
 FEEDBACK_LLM = make_llm()
 FLOW_DB = Path(__file__).resolve().parents[1] / ".crewai_flows" / "flows.db"
 FLOW_DB.parent.mkdir(exist_ok=True)

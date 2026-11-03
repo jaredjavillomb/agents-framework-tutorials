@@ -17,7 +17,7 @@ from langchain.agents.middleware import wrap_tool_call
 from langchain_core.messages import ToolMessage
 from langgraph.types import interrupt
 
-APPROVAL_THRESHOLD = 100.00  # policy P5: refunds over $100.00 need a supervisor
+from agent_contracts.shipfast.tools import APPROVAL_THRESHOLD  # policy P5, shared by all builds
 
 
 def _amount(args: dict) -> float | None:

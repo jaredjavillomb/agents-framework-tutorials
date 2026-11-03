@@ -16,27 +16,12 @@ from crewai import Agent
 from crewai.flow.flow import Flow, listen, or_, router, start
 from pydantic import BaseModel, Field
 
+from agent_contracts.research.prompts import CRITIC, PLANNER, RESEARCHER, WRITER  # shared by all builds
 from agent_contracts.research.schema import Critique, Report
 from crew_agents.llm import make_llm
 from crew_agents.tools import research_tools
 
 MAX_REVISIONS = 2
-
-# The same instructions as the LangGraph build (lg_agents/research_flow.py), so only the framework differs.
-RESEARCHER = """You research questions about the company Veltara Aquatech using web_search, which returns
-short articles, each with an id (such as F04) and a published date. Use calculator for any arithmetic.
-You may make at most 5 tool calls in total. Search with a few specific keywords. When articles disagree,
-the most recently published one is current. Finish with a short list of the facts you found, each with
-its article id and published date, and any calculation results."""
-
-WRITER = """Answer the question in two or three sentences using only the findings given. State only current
-facts: when sources disagree, use the most recently published one and do not mention older figures. Cite
-the article ids you used in square brackets, such as [F04]."""
-
-CRITIC = """You check a draft answer against research findings. Verdict "revise" if any fact in the draft is
-not supported by the findings, if a fact the question asks for is missing, if it uses a figure from an
-older article that a newer article contradicts, or if it mentions an outdated figure at all. Otherwise
-verdict "pass". List each problem in issues."""
 
 
 class Plan(BaseModel):
@@ -80,7 +65,7 @@ class ResearchFlow(Flow[ResearchState]):
 
     @start()
     def plan(self):
-        p = self.llm.call([{"role": "system", "content": "Plan how to research this question in 2 to 4 short steps."},
+        p = self.llm.call([{"role": "system", "content": PLANNER},
                            {"role": "user", "content": self.state.question}], response_model=Plan)
         self.state.plan = p.steps
 
@@ -116,3 +101,15 @@ class ResearchFlow(Flow[ResearchState]):
 def to_report(state: ResearchState) -> Report:
     return Report(question_id=state.question_id, plan=state.plan, answer=state.answer, citations=state.citations,
                   critiques=[Critique(**c) for c in state.critiques], revisions=state.revisions)
+
+
+async def answer(question_id: str, question: str, metrics=None) -> Report:
+    """Answer one question with a fresh flow: the function the shared research runner calls."""
+    from contextlib import nullcontext
+
+    from crew_agents.metrics import harness_listener
+
+    flow = ResearchFlow()
+    with harness_listener.measuring(metrics) if metrics is not None else nullcontext():
+        await flow.kickoff_async(inputs={"question_id": question_id, "question": question})
+    return to_report(flow.state)

@@ -1,0 +1,292 @@
+{
+  "framework": "langgraph",
+  "framework_version": "1.2.19",
+  "model": "qwen3-agents",
+  "run_at": "2026-11-03T08:02:55+00:00",
+  "scenarios": [
+    {
+      "id": "S1_status_with_followup",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "order_status",
+        "order_id": "A1001",
+        "action": "answered",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "The exact arrival date for your order A1001 is estimated to be November 4, 2026. Please note that this is an estimated delivery date, and actual delivery may vary slightly depending on the carrier's schedule. Let me know if you need further assistance!"
+      },
+      "turn_resolutions": [
+        {
+          "intent": "order_status",
+          "order_id": "A1001",
+          "action": "answered",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "Your order A1001 is currently in transit with LBC. It was picked up on October 30, 2026, and arrived at the Cebu sorting hub on October 31, 2026. The estimated delivery date is November 4, 2026. Please ensure someone is available to receive the package on that date. Let me know if you need further assistance!"
+        },
+        {
+          "intent": "order_status",
+          "order_id": "A1001",
+          "action": "answered",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The exact arrival date for your order A1001 is estimated to be November 4, 2026. Please note that this is an estimated delivery date, and actual delivery may vary slightly depending on the carrier's schedule. Let me know if you need further assistance!"
+        }
+      ],
+      "tool_calls": [
+        "track_shipment"
+      ],
+      "llm_calls": 7,
+      "input_tokens": 2811,
+      "output_tokens": 231,
+      "latency_s": 58.157,
+      "error": null
+    },
+    {
+      "id": "S2_lost_refund_auto",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1002",
+        "action": "refunded",
+        "refund_amount": 45.0,
+        "ticket_id": null,
+        "reply": "Your refund for order A1002 has been issued. The total amount of $45.00 will be refunded to your original payment method. Thank you for your patience."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1002",
+          "action": "refunded",
+          "refund_amount": 45.0,
+          "ticket_id": null,
+          "reply": "Your refund for order A1002 has been issued. The total amount of $45.00 will be refunded to your original payment method. Thank you for your patience."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 5,
+      "input_tokens": 3267,
+      "output_tokens": 158,
+      "latency_s": 39.534,
+      "error": null
+    },
+    {
+      "id": "S3a_late_refund_approved",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1003",
+        "action": "refunded",
+        "refund_amount": 250.0,
+        "ticket_id": null,
+        "reply": "Your refund for order A1003 has been issued. You will receive a full refund of $250.00. Thank you for your patience and understanding."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1003",
+          "action": "refunded",
+          "refund_amount": 250.0,
+          "ticket_id": null,
+          "reply": "Your refund for order A1003 has been issued. You will receive a full refund of $250.00. Thank you for your patience and understanding."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 6,
+      "input_tokens": 5048,
+      "output_tokens": 186,
+      "latency_s": 55.343,
+      "error": null
+    },
+    {
+      "id": "S3b_late_refund_rejected",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1003",
+        "action": "escalated",
+        "refund_amount": null,
+        "ticket_id": "TCK-A1003",
+        "reply": "The refund for your order (A1003) has been rejected by the supervisor. A specialist has been notified and will follow up with you. You can check the status of your ticket using the reference number TCK-A1003. We apologize for the inconvenience and appreciate your patience."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1003",
+          "action": "escalated",
+          "refund_amount": null,
+          "ticket_id": "TCK-A1003",
+          "reply": "The refund for your order (A1003) has been rejected by the supervisor. A specialist has been notified and will follow up with you. You can check the status of your ticket using the reference number TCK-A1003. We apologize for the inconvenience and appreciate your patience."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy",
+        "escalate_to_human"
+      ],
+      "llm_calls": 7,
+      "input_tokens": 6631,
+      "output_tokens": 275,
+      "latency_s": 73.782,
+      "error": null
+    },
+    {
+      "id": "S4_damaged_needs_photo_then_refund",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "complaint",
+        "order_id": "A1004",
+        "action": "refunded",
+        "refund_amount": 60.0,
+        "ticket_id": null,
+        "reply": "Your full refund of $60.00 for the broken vase set in order A1004 has been processed. You should see the refund reflected in your account within a few business days. If you have any further questions, feel free to ask!"
+      },
+      "turn_resolutions": [
+        {
+          "intent": "complaint",
+          "order_id": "A1004",
+          "action": "needs_info",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The vase set from your order A1004 arrived broken. According to our policy, you must provide a photo of the damage within 7 days of the delivery date. Since the delivery was on October 30, 2026, and today is November 1, 2026, you are still within the 7-day window. Please provide a photo of the damaged vase set so we can process a full refund."
+        },
+        {
+          "intent": "complaint",
+          "order_id": "A1004",
+          "action": "refunded",
+          "refund_amount": 60.0,
+          "ticket_id": null,
+          "reply": "Your full refund of $60.00 for the broken vase set in order A1004 has been processed. You should see the refund reflected in your account within a few business days. If you have any further questions, feel free to ask!"
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 9,
+      "input_tokens": 6036,
+      "output_tokens": 324,
+      "latency_s": 93.028,
+      "error": null
+    },
+    {
+      "id": "S5_outside_refund_window",
+      "passed": false,
+      "problems": [
+        "action: expected 'declined', got 'refunded'",
+        "refund_amount: expected None, got 35.0"
+      ],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1005",
+        "action": "refunded",
+        "refund_amount": 35.0,
+        "ticket_id": null,
+        "reply": "We have issued a full refund of $35.00 for your order A1005. Please provide a photo of the defective stand so we can process the refund. Thank you for your understanding!"
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1005",
+          "action": "refunded",
+          "refund_amount": 35.0,
+          "ticket_id": null,
+          "reply": "We have issued a full refund of $35.00 for your order A1005. Please provide a photo of the defective stand so we can process the refund. Thank you for your understanding!"
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 5,
+      "input_tokens": 3161,
+      "output_tokens": 180,
+      "latency_s": 43.509,
+      "error": null
+    },
+    {
+      "id": "S6_unknown_order",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "order_status",
+        "order_id": "A9999",
+        "action": "needs_info",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "I couldn't find any order with the ID A9999. Could you please double-check the order ID or provide more details?"
+      },
+      "turn_resolutions": [
+        {
+          "intent": "order_status",
+          "order_id": "A9999",
+          "action": "needs_info",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "I couldn't find any order with the ID A9999. Could you please double-check the order ID or provide more details?"
+        }
+      ],
+      "tool_calls": [
+        "lookup_order"
+      ],
+      "llm_calls": 4,
+      "input_tokens": 1405,
+      "output_tokens": 85,
+      "latency_s": 19.408,
+      "error": null
+    },
+    {
+      "id": "S7_out_of_scope",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "other",
+        "order_id": null,
+        "action": "declined",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "Sorry, I can only help with orders, deliveries, refunds and complaints."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "other",
+          "order_id": null,
+          "action": "declined",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "Sorry, I can only help with orders, deliveries, refunds and complaints."
+        }
+      ],
+      "tool_calls": [],
+      "llm_calls": 1,
+      "input_tokens": 147,
+      "output_tokens": 17,
+      "latency_s": 4.0,
+      "error": null
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "total": 8,
+    "total_tokens": 29962,
+    "total_latency_s": 386.761
+  }
+}

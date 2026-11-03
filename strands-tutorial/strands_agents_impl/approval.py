@@ -13,7 +13,7 @@ import json
 
 from strands.hooks import BeforeToolCallEvent, HookProvider, HookRegistry
 
-APPROVAL_THRESHOLD = 100.00  # policy P5: refunds over $100.00 need a supervisor
+from agent_contracts.shipfast.tools import APPROVAL_THRESHOLD  # policy P5, shared by all builds
 
 
 class RefundApproval(HookProvider):

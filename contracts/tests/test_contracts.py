@@ -68,6 +68,19 @@ def test_issue_refund_counts_earlier_refunds():
     assert json.loads(st.issue_refund("A1004", 60, "after reset"))["status"] == "issued"
 
 
+def test_shared_prompts_exist():
+    from agent_contracts.research import prompts as rp
+    from agent_contracts.shipfast import prompts as sp
+    for text in (rp.PLANNER, rp.RESEARCHER, rp.WRITER, rp.CRITIC, sp.SPECIALIST, sp.TRIAGE):
+        assert text.strip() and "\u2014" not in text and "\u2013" not in text
+    assert "at most 5 tool calls" in rp.RESEARCHER and "search_policy" in sp.SPECIALIST
+
+
+def test_approval_threshold_is_policy_p5():
+    assert st.APPROVAL_THRESHOLD == 100.00
+    assert "over $100.00" in st.POLICY_TEXT
+
+
 def test_escalate_and_tool_log_and_reset():
     assert json.loads(st.escalate_to_human("", "poem request"))["ticket_id"] == "TCK-GENERAL"
     assert json.loads(st.escalate_to_human("A1003", "rejected"))["ticket_id"] == "TCK-A1003"

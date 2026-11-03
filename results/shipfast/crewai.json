@@ -1,0 +1,301 @@
+{
+  "framework": "crewai",
+  "framework_version": "1.15.34",
+  "model": "qwen3-agents",
+  "run_at": "2026-11-03T08:34:31+00:00",
+  "scenarios": [
+    {
+      "id": "S1_status_with_followup",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "order_status",
+        "order_id": "A1001",
+        "action": "answered",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "Your order A1001 is expected to arrive by November 4, 2026. The latest update shows it has arrived at the Cebu sorting hub. We'll keep you updated if there are any changes to the delivery timeline."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "order_status",
+          "order_id": "A1001",
+          "action": "answered",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "Your order A1001 (Wireless Headphones) is currently in transit with LBC. It was picked up on October 30, 2026, and is expected to arrive by November 4, 2026. The latest update shows it has arrived at the Cebu sorting hub. We'll keep you updated if there are any changes to the delivery timeline."
+        },
+        {
+          "intent": "order_status",
+          "order_id": "A1001",
+          "action": "answered",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "Your order A1001 is expected to arrive by November 4, 2026. The latest update shows it has arrived at the Cebu sorting hub. We'll keep you updated if there are any changes to the delivery timeline."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "track_shipment"
+      ],
+      "llm_calls": 9,
+      "input_tokens": 4394,
+      "output_tokens": 269,
+      "latency_s": 70.066,
+      "error": null
+    },
+    {
+      "id": "S2_lost_refund_auto",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1002",
+        "action": "refunded",
+        "refund_amount": 45.0,
+        "ticket_id": null,
+        "reply": "Your refund for order A1002 has been issued successfully. The total amount of $45.00 will be refunded to your original payment method. Thank you for your patience and understanding."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1002",
+          "action": "refunded",
+          "refund_amount": 45.0,
+          "ticket_id": null,
+          "reply": "Your refund for order A1002 has been issued successfully. The total amount of $45.00 will be refunded to your original payment method. Thank you for your patience and understanding."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 6,
+      "input_tokens": 4674,
+      "output_tokens": 182,
+      "latency_s": 51.213,
+      "error": null
+    },
+    {
+      "id": "S3a_late_refund_approved",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1003",
+        "action": "refunded",
+        "refund_amount": 250.0,
+        "ticket_id": null,
+        "reply": "Good news: your refund of $250.00 for order A1003 has been approved and issued."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1003",
+          "action": "refunded",
+          "refund_amount": 250.0,
+          "ticket_id": null,
+          "reply": "Good news: your refund of $250.00 for order A1003 has been approved and issued."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 7,
+      "input_tokens": 5226,
+      "output_tokens": 180,
+      "latency_s": 58.562,
+      "error": null
+    },
+    {
+      "id": "S3b_late_refund_rejected",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1003",
+        "action": "escalated",
+        "refund_amount": null,
+        "ticket_id": "TCK-A1003",
+        "reply": "A specialist has been assigned to your case, ticket TCK-A1003. We will follow up with you shortly. We apologize for the inconvenience caused by the delay."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1003",
+          "action": "escalated",
+          "refund_amount": null,
+          "ticket_id": "TCK-A1003",
+          "reply": "A specialist has been assigned to your case, ticket TCK-A1003. We will follow up with you shortly. We apologize for the inconvenience caused by the delay."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy",
+        "escalate_to_human"
+      ],
+      "llm_calls": 9,
+      "input_tokens": 6628,
+      "output_tokens": 267,
+      "latency_s": 78.882,
+      "error": null
+    },
+    {
+      "id": "S4_damaged_needs_photo_then_refund",
+      "passed": false,
+      "problems": [
+        "action: expected 'refunded', got 'answered'",
+        "refund_amount: expected 60.0, got None",
+        "turn 1: action: expected 'needs_info', got 'refunded'",
+        "turn 1: refund_amount: expected None, got 60.0",
+        "turn 2: action: expected 'refunded', got 'answered'",
+        "turn 2: refund_amount: expected 60.0, got None"
+      ],
+      "resolution": {
+        "intent": "complaint",
+        "order_id": "A1004",
+        "action": "answered",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "The refund for your order A1004 has already been processed in full. If you need further assistance, please let me know. Thank you for your understanding."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "complaint",
+          "order_id": "A1004",
+          "action": "refunded",
+          "refund_amount": 60.0,
+          "ticket_id": null,
+          "reply": "The refund for your order A1004 has been issued. Please provide a photo of the damaged vase set so we can process the refund. Thank you for your understanding."
+        },
+        {
+          "intent": "complaint",
+          "order_id": "A1004",
+          "action": "answered",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The refund for your order A1004 has already been processed in full. If you need further assistance, please let me know. Thank you for your understanding."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy",
+        "issue_refund",
+        "lookup_order",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 12,
+      "input_tokens": 8229,
+      "output_tokens": 358,
+      "latency_s": 81.967,
+      "error": null
+    },
+    {
+      "id": "S5_outside_refund_window",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1005",
+        "action": "declined",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "The order was delivered on 2026-09-15, and today is 2026-11-01. This is more than 30 days after the delivery date. According to our policy, we cannot issue a refund for orders delivered more than 30 days ago. I'm sorry for the inconvenience, but I'll need to escalate this to a human agent for further assistance."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1005",
+          "action": "declined",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The order was delivered on 2026-09-15, and today is 2026-11-01. This is more than 30 days after the delivery date. According to our policy, we cannot issue a refund for orders delivered more than 30 days ago. I'm sorry for the inconvenience, but I'll need to escalate this to a human agent for further assistance."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "search_policy"
+      ],
+      "llm_calls": 5,
+      "input_tokens": 2551,
+      "output_tokens": 169,
+      "latency_s": 38.123,
+      "error": null
+    },
+    {
+      "id": "S6_unknown_order",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "order_status",
+        "order_id": "A9999",
+        "action": "needs_info",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "The order ID A9999 could not be found in our system. Could you please double-check the order ID or provide any additional details that might help us locate your order?"
+      },
+      "turn_resolutions": [
+        {
+          "intent": "order_status",
+          "order_id": "A9999",
+          "action": "needs_info",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The order ID A9999 could not be found in our system. Could you please double-check the order ID or provide any additional details that might help us locate your order?"
+        }
+      ],
+      "tool_calls": [
+        "lookup_order"
+      ],
+      "llm_calls": 4,
+      "input_tokens": 1482,
+      "output_tokens": 94,
+      "latency_s": 19.334,
+      "error": null
+    },
+    {
+      "id": "S7_out_of_scope",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "other",
+        "order_id": null,
+        "action": "declined",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "Sorry, I can only help with orders, deliveries, refunds and complaints."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "other",
+          "order_id": null,
+          "action": "declined",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "Sorry, I can only help with orders, deliveries, refunds and complaints."
+        }
+      ],
+      "tool_calls": [],
+      "llm_calls": 1,
+      "input_tokens": 147,
+      "output_tokens": 17,
+      "latency_s": 3.312,
+      "error": null
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "total": 8,
+    "total_tokens": 34867,
+    "total_latency_s": 401.459
+  }
+}

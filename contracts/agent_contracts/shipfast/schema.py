@@ -22,3 +22,10 @@ class Resolution(BaseModel):
     refund_amount: float | None = Field(default=None, description="Only when a refund was actually issued")
     ticket_id: str | None = None
     reply: str = Field(description="The customer-facing reply")
+
+
+class Outcome(BaseModel):
+    """The model's one judgement call in a Resolution, for turns that left no record (DECISIONS.md 16)."""
+    action: Literal["answered", "needs_info", "declined"] = Field(
+        description="answered: gave the customer information; needs_info: asked the customer for something "
+                    "(a photo, a correct order ID); declined: refused the request under the policy")

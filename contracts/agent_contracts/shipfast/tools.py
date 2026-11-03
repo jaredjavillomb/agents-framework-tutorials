@@ -19,6 +19,11 @@ ORDERS: dict[str, dict] = json.loads((DATA / "orders.json").read_text())
 POLICY_TEXT = (DATA / "policy.md").read_text()
 
 log = ToolCallLog()
+
+# Policy P5: refunds over this amount need a supervisor's approval. Each framework enforces the pause in
+# its own control flow (SPEC.md section 3); issue_refund itself does not check it. One shared value, so
+# every build applies the same rule.
+APPROVAL_THRESHOLD = 100.00
 _lock = threading.Lock()
 _refunds: list[dict] = []
 _tickets: list[dict] = []

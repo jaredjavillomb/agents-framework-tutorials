@@ -26,9 +26,12 @@ from agent_contracts.harness import RunMetrics
 T = TypeVar("T", bound=BaseModel)
 
 
-def structured_call(model: OllamaModel, schema: type[T], prompt: str, system: str | None = None,
-                    metrics: RunMetrics | None = None) -> T:
-    request = model.format_request(messages=[{"role": "user", "content": [{"text": prompt}]}], system_prompt=system)
+def structured_call(model: OllamaModel, schema: type[T], prompt: str | None = None, system: str | None = None,
+                    metrics: RunMetrics | None = None, messages: list[dict] | None = None) -> T:
+    """One structured answer. Pass `prompt` for a single user message, or `messages` (Strands message dicts)
+    for a whole conversation."""
+    messages = messages or [{"role": "user", "content": [{"text": prompt}]}]
+    request = model.format_request(messages=messages, system_prompt=system)
     request["format"] = schema.model_json_schema()
     request["stream"] = False
     request.pop("tools", None)

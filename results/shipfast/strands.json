@@ -1,0 +1,297 @@
+{
+  "framework": "strands",
+  "framework_version": "1.63.0",
+  "model": "qwen3-agents",
+  "run_at": "2026-11-03T09:07:16+00:00",
+  "scenarios": [
+    {
+      "id": "S1_status_with_followup",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "order_status",
+        "order_id": "A1001",
+        "action": "answered",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "The exact arrival date for your order A1001 is expected to be November 4, 2026, according to the latest tracking information. Let me know if you need further assistance!"
+      },
+      "turn_resolutions": [
+        {
+          "intent": "order_status",
+          "order_id": "A1001",
+          "action": "answered",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "Your order A1001 is currently in transit with LBC. It is expected to arrive by November 4, 2026. The latest tracking events are:\n\n- October 28, 2026: Order packed at Manila warehouse\n- October 30, 2026: Picked up by LBC\n- October 31, 2026: Arrived at Cebu sorting hub\n\nPlease allow a few more days for delivery. Let me know if you need further assistance!"
+        },
+        {
+          "intent": "order_status",
+          "order_id": "A1001",
+          "action": "answered",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The exact arrival date for your order A1001 is expected to be November 4, 2026, according to the latest tracking information. Let me know if you need further assistance!"
+        }
+      ],
+      "tool_calls": [
+        "track_shipment"
+      ],
+      "llm_calls": 7,
+      "input_tokens": 2999,
+      "output_tokens": 239,
+      "latency_s": 56.288,
+      "error": null
+    },
+    {
+      "id": "S2_lost_refund_auto",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1002",
+        "action": "refunded",
+        "refund_amount": 45.0,
+        "ticket_id": null,
+        "reply": "Your refund for order A1002 has been issued. You'll receive a full refund of $45.00. Thank you for your patience."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1002",
+          "action": "refunded",
+          "refund_amount": 45.0,
+          "ticket_id": null,
+          "reply": "Your refund for order A1002 has been issued. You'll receive a full refund of $45.00. Thank you for your patience."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 5,
+      "input_tokens": 3435,
+      "output_tokens": 142,
+      "latency_s": 33.996,
+      "error": null
+    },
+    {
+      "id": "S3a_late_refund_approved",
+      "passed": false,
+      "problems": [
+        "action: expected 'refunded', got 'answered'",
+        "refund_amount: expected 250.0, got None"
+      ],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1003",
+        "action": "answered",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "The order A1003 is delayed, and the ETA is October 24, 2026. Since today is November 1, 2026, the order is more than 5 days past its ETA. According to the policy, we will issue a full refund of the order total. \n\nI will process the refund for $250.00. Please wait a moment while I complete this."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1003",
+          "action": "answered",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The order A1003 is delayed, and the ETA is October 24, 2026. Since today is November 1, 2026, the order is more than 5 days past its ETA. According to the policy, we will issue a full refund of the order total. \n\nI will process the refund for $250.00. Please wait a moment while I complete this."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy"
+      ],
+      "llm_calls": 6,
+      "input_tokens": 3948,
+      "output_tokens": 194,
+      "latency_s": 56.648,
+      "error": null
+    },
+    {
+      "id": "S3b_late_refund_rejected",
+      "passed": false,
+      "problems": [
+        "action: expected 'escalated', got 'answered'"
+      ],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1003",
+        "action": "answered",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "The order A1003 is delayed, and the ETA is October 24, 2026. Since today is November 1, 2026, the order is more than 5 days past its ETA. According to the policy, we will issue a full refund of the order total. \n\nI will process the refund for $250.00. Please wait a moment while I complete this."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1003",
+          "action": "answered",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The order A1003 is delayed, and the ETA is October 24, 2026. Since today is November 1, 2026, the order is more than 5 days past its ETA. According to the policy, we will issue a full refund of the order total. \n\nI will process the refund for $250.00. Please wait a moment while I complete this."
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy"
+      ],
+      "llm_calls": 6,
+      "input_tokens": 3948,
+      "output_tokens": 194,
+      "latency_s": 51.525,
+      "error": null
+    },
+    {
+      "id": "S4_damaged_needs_photo_then_refund",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "complaint",
+        "order_id": "A1004",
+        "action": "refunded",
+        "refund_amount": 60.0,
+        "ticket_id": null,
+        "reply": "Your full refund of $60.00 for the broken vase set in order A1004 has been processed. You should see the refund reflected in your account within a few business days. If you have any further questions, feel free to ask!"
+      },
+      "turn_resolutions": [
+        {
+          "intent": "complaint",
+          "order_id": "A1004",
+          "action": "needs_info",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The vase set from your order A1004 arrived broken. According to our policy, you must provide a photo of the damage within 7 days of the delivery date. Since the delivery was on October 30, 2026, and today is November 1, 2026, you are still within the 7-day window. Please provide a photo of the broken vase so we can process a full refund."
+        },
+        {
+          "intent": "complaint",
+          "order_id": "A1004",
+          "action": "refunded",
+          "refund_amount": 60.0,
+          "ticket_id": null,
+          "reply": "Your full refund of $60.00 for the broken vase set in order A1004 has been processed. You should see the refund reflected in your account within a few business days. If you have any further questions, feel free to ask!"
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "track_shipment",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 9,
+      "input_tokens": 6296,
+      "output_tokens": 323,
+      "latency_s": 77.801,
+      "error": null
+    },
+    {
+      "id": "S5_outside_refund_window",
+      "passed": false,
+      "problems": [
+        "action: expected 'declined', got 'refunded'",
+        "refund_amount: expected None, got 35.0"
+      ],
+      "resolution": {
+        "intent": "refund_request",
+        "order_id": "A1005",
+        "action": "refunded",
+        "refund_amount": 35.0,
+        "ticket_id": null,
+        "reply": "We have issued a full refund of $35.00 for your order A1005. Please provide a photo of the defective stand so we can process the refund. Thank you for your understanding!"
+      },
+      "turn_resolutions": [
+        {
+          "intent": "refund_request",
+          "order_id": "A1005",
+          "action": "refunded",
+          "refund_amount": 35.0,
+          "ticket_id": null,
+          "reply": "We have issued a full refund of $35.00 for your order A1005. Please provide a photo of the defective stand so we can process the refund. Thank you for your understanding!"
+        }
+      ],
+      "tool_calls": [
+        "lookup_order",
+        "search_policy",
+        "issue_refund"
+      ],
+      "llm_calls": 5,
+      "input_tokens": 3333,
+      "output_tokens": 176,
+      "latency_s": 35.191,
+      "error": null
+    },
+    {
+      "id": "S6_unknown_order",
+      "passed": false,
+      "problems": [
+        "action: expected 'needs_info', got 'declined'"
+      ],
+      "resolution": {
+        "intent": "order_status",
+        "order_id": "A9999",
+        "action": "declined",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "The order ID A9999 could not be found. Please double-check the order ID and try again. If you need further assistance, feel free to ask!"
+      },
+      "turn_resolutions": [
+        {
+          "intent": "order_status",
+          "order_id": "A9999",
+          "action": "declined",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "The order ID A9999 could not be found. Please double-check the order ID and try again. If you need further assistance, feel free to ask!"
+        }
+      ],
+      "tool_calls": [
+        "lookup_order"
+      ],
+      "llm_calls": 4,
+      "input_tokens": 1499,
+      "output_tokens": 91,
+      "latency_s": 16.67,
+      "error": null
+    },
+    {
+      "id": "S7_out_of_scope",
+      "passed": true,
+      "problems": [],
+      "resolution": {
+        "intent": "other",
+        "order_id": null,
+        "action": "declined",
+        "refund_amount": null,
+        "ticket_id": null,
+        "reply": "Sorry, I can only help with orders, deliveries, refunds and complaints."
+      },
+      "turn_resolutions": [
+        {
+          "intent": "other",
+          "order_id": null,
+          "action": "declined",
+          "refund_amount": null,
+          "ticket_id": null,
+          "reply": "Sorry, I can only help with orders, deliveries, refunds and complaints."
+        }
+      ],
+      "tool_calls": [],
+      "llm_calls": 1,
+      "input_tokens": 147,
+      "output_tokens": 17,
+      "latency_s": 3.046,
+      "error": null
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "total": 8,
+    "total_tokens": 26981,
+    "total_latency_s": 331.165
+  }
+}

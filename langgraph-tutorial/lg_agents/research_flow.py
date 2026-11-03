@@ -19,6 +19,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
+from agent_contracts.research.prompts import CRITIC, PLANNER, RESEARCHER, WRITER  # shared by all builds
 from agent_contracts.research.schema import Critique, Report
 from lg_agents.llm import make_llm
 from lg_agents.tools import research_tools
@@ -46,22 +47,6 @@ class ResearchState(TypedDict, total=False):
     revisions: int
 
 
-RESEARCHER = """You research questions about the company Veltara Aquatech using web_search, which returns
-short articles, each with an id (such as F04) and a published date. Use calculator for any arithmetic.
-You may make at most 5 tool calls in total. Search with a few specific keywords. When articles disagree,
-the most recently published one is current. Finish with a short list of the facts you found, each with
-its article id and published date, and any calculation results."""
-
-WRITER = """Answer the question in two or three sentences using only the findings given. State only current
-facts: when sources disagree, use the most recently published one and do not mention older figures. Cite
-the article ids you used in square brackets, such as [F04]."""
-
-CRITIC = """You check a draft answer against research findings. Verdict "revise" if any fact in the draft is
-not supported by the findings, if a fact the question asks for is missing, if it uses a figure from an
-older article that a newer article contradicts, or if it mentions an outdated figure at all. Otherwise
-verdict "pass". List each problem in issues."""
-
-
 def critique_draft(llm, question: str, findings: str, answer: str, citations: list[str]) -> Critique:
     prompt = f"Question: {question}\n\nFindings:\n{findings}\n\nDraft answer:\n{answer}\nCitations: {citations}"
     return llm.with_structured_output(Critique).invoke([SystemMessage(CRITIC), HumanMessage(prompt)])
@@ -81,7 +66,7 @@ def build_research_flow(llm=None):
 
     def plan(state: ResearchState) -> ResearchState:
         p = llm.with_structured_output(Plan).invoke(
-            [SystemMessage("Plan how to research this question in 2 to 4 short steps."), HumanMessage(state["question"])])
+            [SystemMessage(PLANNER), HumanMessage(state["question"])])
         return {"plan": p.steps, "revisions": 0, "critiques": []}
 
     def research(state: ResearchState) -> ResearchState:
@@ -124,3 +109,12 @@ def to_report(state: ResearchState) -> Report:
     return Report(question_id=state["question_id"], plan=state.get("plan", []), answer=state.get("answer", ""),
                   citations=state.get("citations", []),
                   critiques=[Critique(**c) for c in state.get("critiques", [])], revisions=state.get("revisions", 0))
+
+
+async def answer(question_id: str, question: str, metrics=None, flow=None) -> Report:
+    """Answer one question with the workflow: the function the shared research runner calls."""
+    from lg_agents.metrics import HarnessCallback  # local import: metrics imports nothing from here
+
+    flow = flow or build_research_flow()
+    config = {"callbacks": [HarnessCallback(metrics)]} if metrics is not None else {}
+    return to_report(await flow.ainvoke({"question_id": question_id, "question": question}, config=config))

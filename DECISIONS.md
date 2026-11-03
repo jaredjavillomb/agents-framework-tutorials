@@ -169,6 +169,43 @@ Rejected: leaving the tool as it was and catching double refunds in scoring only
 $60). That records the mistake but lets real money go out twice, and leaves each framework to guard
 against it separately.
 
+## 16. ShipFast's Resolution: code records the facts, the model writes the reply
+
+In all three capstones, `intent` and `order_id` come from the triage step; `action`, `refund_amount` and
+`ticket_id` are derived from what happened (a refund in the ledger is `refunded` with its amount, a ticket
+is `escalated`, a pause at the approval gate is `pending_approval`, an out-of-scope triage is
+`declined`). Only when nothing was recorded does the model choose between `answered`, `needs_info` and
+`declined`, as a small structured call, and it writes the customer reply. The derivation is one shared
+function in `contracts/`, so the rule is identical in every build.
+
+Evidence: in the component notebooks of all three frameworks the 8B model reported outcomes unreliably
+when asked to fill in a Resolution itself: it skipped the report, claimed refunds that never happened
+($150 on a $45 order) and invented ticket numbers.
+
+Rejected: the model fills in the whole Resolution, as most framework tutorials do. Simpler, and it shows
+each framework's structured output, but scores would mostly measure the model's form-filling mistakes
+rather than the frameworks.
+
+## 17. One shared $100 approval limit
+
+`APPROVAL_THRESHOLD = 100.00` lives once, in `agent_contracts.shipfast.tools`, and all three approval
+gates import it. Each framework still enforces the pause in its own control flow, as SPEC.md section 3
+requires; `issue_refund` does not check it. A test ties the value to policy P5's text.
+
+Rejected: a copy of the number in each framework's gate. Nothing changes today, but a policy change would
+have to be made in three files, and a missed one would make the comparison test different rules.
+
+## 18. One shared copy of the agents' instructions
+
+`agent_contracts/research/prompts.py` holds the research planner, researcher, writer and critic
+instructions; `agent_contracts/shipfast/prompts.py` holds the ShipFast specialist instructions and the
+triage instruction. Every build imports them (CrewAI uses the specialist text as its agent's backstory).
+Before the move the three copies were checked and found identical, so the component notebooks' runs were
+like for like.
+
+Rejected: a copy in each build. Nothing changes today, but every later wording change would have to be made
+three times, and a missed copy would give one framework different instructions without anyone noticing.
+
 ## Open
 
 - Who edits `contracts/`. Recommended: one neutral owner, framework sessions only read and request

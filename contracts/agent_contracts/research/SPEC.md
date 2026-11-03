@@ -121,8 +121,8 @@ with `"passed": false` and the reason, not dropped.
 
 ## 6. Test runner and results
 
-Each build ships a runner (`run_eval.py`, using the shared harness in `agent_contracts.harness`) that,
-for every question in `questions.json`, once (DECISIONS.md 9):
+Each build's `run_eval.py` calls the shared `agent_contracts.harness.runners.run_research_eval` with one
+function that answers a question. For every question in `questions.json`, once (DECISIONS.md 9), it:
 
 1. calls `tools.reset()`,
 2. runs the agent on the question,
