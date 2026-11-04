@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agent Frameworks Setup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one readable column, a facts strip, then numbered steps; each command sits in a small Terminal window. */
+:root {
+  --bg: #f5f7f9;
+  --surface: #ffffff;
+  --fg: #17212b;
+  --muted: #55626f;
+  --line: #d9e0e6;
+  --accent: #2346a8;
+  --accent-soft: #e6ebf8;
+  --ok: #1d7a4a;
+  --ok-soft: #e3f3ea;
+  --warn: #8a5a00;
+  --warn-soft: #fbf0d9;
+  --term-bg: #10161d;
+  --term-bar: #1d2630;
+  --term-fg: #dfe7ee;
+  --term-dim: #8394a5;
+  --term-ok: #7fd6a2;
+  --display: "Bricolage Grotesque", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  --body: "Atkinson Hyperlegible", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1419; --surface: #161d24; --fg: #e3e9ef; --muted: #9aa8b5; --line: #2a3540;
+    --accent: #8fa8f0; --accent-soft: #1d2740; --ok: #74d39c; --ok-soft: #142a1f;
+    --warn: #f0c46a; --warn-soft: #2c2410; --term-bg: #0a0e12; --term-bar: #18212a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1419; --surface: #161d24; --fg: #e3e9ef; --muted: #9aa8b5; --line: #2a3540;
+  --accent: #8fa8f0; --accent-soft: #1d2740; --ok: #74d39c; --ok-soft: #142a1f;
+  --warn: #f0c46a; --warn-soft: #2c2410; --term-bg: #0a0e12; --term-bar: #18212a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font: 17px/1.6 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.page { max-width: 760px; margin: 0 auto; padding-block: 48px 80px; display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.1rem, 6vw, 3rem); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 1.65rem; font-weight: 800; }
+h3 { font-size: 1.2rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+section { display: grid; gap: 16px; min-width: 0; }
+.lede { font-size: 1.15rem; color: var(--muted); max-width: 62ch; }
+.eyebrow { font: 600 0.78rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+header { display: grid; gap: 16px; }
+kbd {
+  font: 600 0.85em var(--mono); background: var(--surface); border: 1px solid var(--line);
+  border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; white-space: nowrap;
+}
+code { font: 0.9em var(--mono); background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+
+/* facts strip */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.fact { background: var(--surface); padding: 14px 16px; display: grid; gap: 2px; }
+.fact b { font: 600 1.1rem var(--display); }
+.fact span { color: var(--muted); font-size: 0.9rem; line-height: 1.4; }
+
+/* callouts */
+.note { border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; background: var(--accent-soft); }
+.note.warn { background: var(--warn-soft); }
+.note.warn strong { color: var(--warn); }
+.note.good { background: var(--ok-soft); }
+.note.good strong { color: var(--ok); }
+
+ul.plain, ol.plain { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+
+/* terminal window */
+.term { background: var(--term-bg); border-radius: 10px; overflow: hidden; min-width: 0; }
+.term-bar { background: var(--term-bar); display: flex; align-items: center; gap: 6px; padding: 8px 10px 8px 12px; }
+.dot { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57; }
+.dot:nth-child(2) { background: #febc2e; }
+.dot:nth-child(3) { background: #28c840; }
+.term-title { flex: 1; text-align: center; color: var(--term-dim); font: 0.78rem var(--mono); }
+.copy {
+  font: 600 0.8rem var(--body); color: var(--term-fg); background: transparent; border: 1px solid #3a4754;
+  border-radius: 6px; padding: 3px 10px; cursor: pointer;
+}
+.copy:hover { border-color: var(--term-fg); }
+.copy:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.copy.done { color: var(--term-ok); border-color: var(--term-ok); }
+pre {
+  margin: 0; padding: 14px 16px; overflow-x: auto; color: var(--term-fg);
+  font: 0.88rem/1.6 var(--mono);
+}
+pre .p { color: var(--term-dim); user-select: none; }
+pre.out { color: var(--term-dim); }
+pre.out .k { color: var(--term-ok); }
+.term + .caption { margin-top: -8px; font-size: 0.9rem; color: var(--muted); }
+
+/* steps */
+.steps { display: grid; gap: 40px; counter-reset: step; }
+.step { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 16px; }
+.num {
+  width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  font: 800 1.15rem var(--display); background: var(--surface); border: 2px solid var(--line); color: var(--fg);
+}
+.step.is-done .num { background: var(--ok); border-color: var(--ok); color: var(--surface); }
+.step-body { display: grid; gap: 14px; min-width: 0; }
+.step-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; padding-top: 8px; }
+.time { font: 0.82rem var(--mono); color: var(--muted); white-space: nowrap; }
+.donebox { display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; color: var(--muted); cursor: pointer; width: fit-content; }
+.donebox input { width: 18px; height: 18px; accent-color: var(--ok); }
+.see { display: grid; gap: 4px; }
+.see > b { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+
+/* tutorial picker */
+.picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.pick {
+  text-align: left; font: inherit; color: var(--fg); background: var(--surface); border: 2px solid var(--line);
+  border-radius: 10px; padding: 12px 14px; cursor: pointer; display: grid; gap: 4px;
+}
+.pick b { font: 600 1.05rem var(--display); }
+.pick span { font-size: 0.9rem; color: var(--muted); line-height: 1.4; }
+.pick[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+
+/* tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font: 600 0.8rem var(--body); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+td.n { font: 600 0.9rem var(--mono); color: var(--accent); white-space: nowrap; }
+td:first-child code { white-space: nowrap; }
+
+dl.gloss { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 20px; }
+dl.gloss dt { font-weight: 700; }
+dl.gloss dd { margin: 0; color: var(--muted); }
+@media (max-width: 520px) {
+  dl.gloss { grid-template-columns: 1fr; gap: 2px; }
+  dl.gloss dd { margin-bottom: 10px; }
+  .step { grid-template-columns: 1fr; gap: 10px; }
+  body { font-size: 16px; }
+}
+footer { color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--line); padding-top: 20px; }
+@media (prefers-reduced-motion: no-preference) { .copy, .pick { transition: border-color .15s, background .15s; } }
+
+/* system switch: show only the reader's system */
+html[data-os="win"] .mac, html:not([data-os="win"]) .win { display: none !important; }
+.os-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.os-switch > span { font-weight: 700; }
+.seg { display: inline-flex; border: 2px solid var(--line); border-radius: 999px; padding: 3px; background: var(--surface); }
+.seg button {
+  font: 600 0.95rem var(--body); color: var(--muted); background: transparent; border: 0;
+  border-radius: 999px; padding: 6px 16px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+.tiers { display: grid; gap: 0; }
+.tag { font: 600 0.75rem var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<header>
+  <p class="eyebrow">Setup guide &middot; no coding needed</p>
+  <h1>Run three AI agent tutorials on your computer</h1>
+  <p class="lede">This project teaches how AI "agents" are built, using three popular toolkits: LangGraph, CrewAI and
+  Strands Agents. Everything runs on your own Mac or Windows PC with a free AI model. There is no account to create,
+  no API key and nothing to pay for. This page walks you through the setup one step at a time. You will
+  copy and paste a few commands; you do not need to understand them.</p>
+  <div class="os-switch" role="group" aria-label="Your computer">
+    <span>I am using:</span>
+    <div class="seg">
+      <button type="button" data-os="mac" aria-pressed="true">Mac</button>
+      <button type="button" data-os="win" aria-pressed="false">Windows PC</button>
+    </div>
+  </div>
+  <div class="facts">
+    <div class="fact"><b>30 to 60 min</b><span>mostly waiting for downloads</span></div>
+    <div class="fact"><b>2 to 7 GB</b><span>of free disk, depending on the model size</span></div>
+    <div class="fact"><b>Free</b><span>no account, no subscription</span></div>
+    <div class="fact"><b>Offline after setup</b><span>the AI runs on your computer</span></div>
+  </div>
+</header>
+
+<section id="check">
+  <h2>First, check your computer</h2>
+  <p>The AI model runs on your own computer, so how much <b>memory</b> (RAM) it has decides which size of model to
+  use. Find it like this:</p>
+  <ul class="plain mac">
+    <li>Open the <b>Apple menu</b> (top left of the screen) and choose <b>About This Mac</b>.</li>
+    <li><b>Chip</b> says <b>Apple M1</b>, M2, M3 or M4 on newer Macs, or <b>Intel</b> on older ones.</li>
+    <li><b>Memory</b> says how much memory it has, for example 16 GB.</li>
+    <li>For disk space, open <b>Apple menu &rsaquo; System Settings &rsaquo; General &rsaquo; Storage</b>.</li>
+  </ul>
+  <ul class="plain win">
+    <li>Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Esc</kbd> to open <b>Task Manager</b>, then click <b>Performance</b>.</li>
+    <li><b>Memory</b> shows how much memory it has, for example 16 GB.</li>
+    <li><b>GPU</b> shows your graphics card. If one says <b>NVIDIA</b> or <b>AMD</b> with "Dedicated GPU memory" of
+      8 GB or more, the model can use it and runs much faster. Most office laptops only have a built-in one
+      (often "Intel"), which is fine but slower.</li>
+    <li>For disk space, open <b>Settings &rsaquo; System &rsaquo; Storage</b>.</li>
+  </ul>
+  <p>Then find your computer in this table. You will choose the model in step 5.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Your computer</th><th>Model size</th><th>Download</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mac">A Mac with an Apple chip and 16 GB of memory or more</span><span class="win">16 GB of memory or more and an NVIDIA or AMD graphics card with 8 GB or more</span></td><td><b>Standard</b> (8B)<br><span class="tag">recommended</span></td><td>5.5 GB</td></tr>
+        <tr><td><span class="mac">8 GB of memory, or an Intel Mac</span><span class="win">8 to 16 GB of memory, or no NVIDIA or AMD graphics card</span></td><td><b>Smaller</b> (4B)</td><td>2.9 GB</td></tr>
+        <tr><td>An older or slower computer, or when the smaller model is still too slow</td><td><b>Smallest</b> (1.7B)</td><td>1.6 GB</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The download includes a small helper model (0.3 GB) one of the tutorials needs. Leave a few GB of disk free beyond
+  that for the tutorials themselves.</p>
+  <div class="note warn">
+    <strong>What a smaller model changes</strong>
+    <p>Everything works the same way, but a smaller model makes more mistakes, especially in deciding which tool to
+    use. The lessons describe what happened with the standard model, so your results will differ more from
+    them. That is still a useful way to learn: you will see first-hand why model size matters for agents.</p>
+  </div>
+  <p>You also need an internet connection for the downloads<span class="mac">, and your Mac's login password (the
+  installer asks for it once)</span>.</p>
+</section>
+
+<section id="terminal">
+  <h2>Two minutes with <span class="mac">Terminal</span><span class="win">PowerShell</span></h2>
+  <p class="mac"><b>Terminal</b> is an app that comes with every Mac. Instead of clicking buttons, you type (or paste)
+  short text instructions called <b>commands</b>. That is all the setup uses.</p>
+  <p class="win"><b>PowerShell</b> is an app that comes with Windows. Instead of clicking buttons, you type (or paste)
+  short text instructions called <b>commands</b>. That is all the setup uses.</p>
+  <ol class="plain mac">
+    <li><b>Open it:</b> press <kbd>&#8984; Cmd</kbd> + <kbd>Space</kbd>, type <b>Terminal</b>, and press <kbd>Return</kbd>.</li>
+    <li><b>It is ready</b> when you see a line ending in <code>%</code>, with a blinking cursor after it.</li>
+    <li><b>To run a command:</b> click <b>Copy</b> on a black box on this page, click inside the Terminal window, press
+      <kbd>&#8984; Cmd</kbd> + <kbd>V</kbd> to paste, then press <kbd>Return</kbd>.</li>
+    <li><b>Wait</b> until the <code>%</code> line comes back before you paste the next command. Text scrolling past is normal.</li>
+  </ol>
+  <ol class="plain win">
+    <li><b>Open it:</b> press the <kbd>Windows</kbd> key, type <b>PowerShell</b>, and press <kbd>Enter</kbd>.</li>
+    <li><b>It is ready</b> when you see a line like <code>PS C:\Users\yourname&gt;</code>, with a blinking cursor after it.</li>
+    <li><b>To run a command:</b> click <b>Copy</b> on a black box on this page, click inside the PowerShell window, press
+      <kbd>Ctrl</kbd> + <kbd>V</kbd> (or right-click) to paste, then press <kbd>Enter</kbd>.</li>
+    <li><b>Wait</b> until the <code>PS C:\...&gt;</code> line comes back before you paste the next command. Text scrolling past is normal.</li>
+  </ol>
+  <div class="term mac" role="group" aria-label="What a ready Terminal looks like">
+    <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">Terminal</span></div>
+    <pre class="out">Last login: Wed Nov  4 09:12:40 on console
+yourname@MacBook-Air ~ % <span class="k">&#9608;</span></pre>
+  </div>
+  <div class="term win" role="group" aria-label="What a ready PowerShell looks like">
+    <div class="term-bar"><span class="term-title">Windows PowerShell</span></div>
+    <pre class="out">Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Users\yourname&gt; <span class="k">&#9608;</span></pre>
+  </div>
+  <div class="note warn mac">
+    <strong>When it asks for a password</strong>
+    <p>Type your Mac login password and press <kbd>Return</kbd>. <b>Nothing appears while you type, not even
+    dots.</b> That is normal and on purpose: it is still receiving what you type.</p>
+  </div>
+  <div class="note win">
+    <strong>Pasting several lines</strong>
+    <p>Some boxes have more than one line. If Windows warns that you are pasting multiple lines, choose
+    <b>Paste anyway</b>; the lines run one after another.</p>
+  </div>
+</section>
+
+<section id="steps">
+  <h2>The setup, step by step</h2>
+  <p>Tick each step as you finish it. This page remembers your ticks in this browser, so you can stop and come back.</p>
+
+  <div class="steps">
+
+    <!-- 1 -->
+    <div class="step" data-step="1">
+      <div class="num">1</div>
+      <div class="step-body mac">
+        <div class="step-head"><h3>Install Homebrew, the app installer</h3><span class="time">5 to 15 min</span></div>
+        <p>Homebrew installs the two tools this project needs. It is the standard way to install developer tools on a
+        Mac. If you already have it, skip to step 2 (to find out, paste <code>brew --version</code>: if it prints a
+        version number, you have it).</p>
+        <div class="term">
+          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+        </div>
+        <p>It asks for your password, then says <b>Press RETURN to continue</b>: press <kbd>Return</kbd>. Your Mac may also
+        offer to install Apple's "Command Line Tools"; say yes.</p>
+        <p>When it finishes it prints <b>Next steps</b>. Paste this to finish the job, so Terminal can find Homebrew:</p>
+        <div class="term">
+          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre>
+        </div>
+        <p>On an <b>Intel</b> Mac this second box is not needed: Homebrew is found automatically.</p>
+        <div class="see"><b>Check</b><p>Paste <code>brew --version</code>. It should print something like <code>Homebrew 4.6.3</code>.</p></div>
+        <label class="donebox"><input type="checkbox" id="done-1"> Done</label>
+      </div>
+      <div class="step-body win">
+        <div class="step-head"><h3>Install Ollama, the app that runs the AI</h3><span class="time">2 to 5 min</span></div>
+        <p>Ollama runs the AI model on your PC, quietly in the background.</p>
+        <ol class="plain">
+          <li>Go to <a href="https://ollama.com/download" target="_blank" rel="noopener">ollama.com/download</a>, choose <b>Windows</b> and download the installer.</li>
+          <li>Open the downloaded <b>OllamaSetup.exe</b> and click <b>Install</b>. If Windows asks whether to allow it to make changes, click <b>Yes</b>.</li>
+          <li>When it finishes, Ollama starts by itself. A small llama icon appears near the clock (you may need to click the <b>^</b> arrow to see it).</li>
+        </ol>
+        <label class="donebox"><input type="checkbox" id="done-1w"> Done</label>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="step" data-step="2">
+      <div class="num">2</div>
+      <div class="step-body mac">
+        <div class="step-head"><h3>Install Ollama and uv</h3><span class="time">1 to 3 min</span></div>
+        <p><b>Ollama</b> runs the AI model on your Mac. <b>uv</b> installs Python and the tutorials' building blocks,
+        each tutorial in its own separate space so they cannot interfere with each other or with anything else on your Mac.</p>
+        <div class="term">
+          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>brew install ollama uv</code></pre>
+        </div>
+        <label class="donebox"><input type="checkbox" id="done-2"> Done</label>
+      </div>
+      <div class="step-body win">
+        <div class="step-head"><h3>Install uv</h3><span class="time">1 min</span></div>
+        <p><b>uv</b> installs Python and the tutorials' building blocks, each tutorial in its own separate space so they
+        cannot interfere with each other or with anything else on your PC. Paste this in PowerShell:</p>
+        <div class="term">
+          <div class="term-bar"><span class="term-title">PowerShell</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></pre>
+        </div>
+        <p><b>Then close PowerShell and open it again</b>, so it notices the new program.</p>
+        <div class="see"><b>Check</b><p>In the new window, paste <code>uv --version</code>. It should print something like <code>uv 0.9.5</code>.</p></div>
+        <label class="donebox"><input type="checkbox" id="done-2w"> Done</label>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="step" data-step="3">
+      <div class="num">3</div>
+      <div class="step-body">
+        <div class="step-head"><h3><span class="mac">Start Ollama</span><span class="win">Check that Ollama is running</span></h3><span class="time">a few seconds</span></div>
+        <p class="mac">This starts Ollama quietly in the background. From now on it also starts by itself whenever you log
+        in, so you only do this once.</p>
+        <div class="term mac">
+          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>brew services start ollama</code></pre>
+        </div>
+        <p class="win">The installer already started Ollama, and it starts by itself whenever you log in. If you ever
+        quit it, open <b>Ollama</b> from the Start menu.</p>
+        <div class="see"><b>Check</b><p>Open <a href="http://localhost:11434" target="_blank" rel="noopener">http://localhost:11434</a>
+        in your web browser. The page should say <b>Ollama is running</b>.</p></div>
+        <label class="donebox"><input type="checkbox" id="done-3"> Done</label>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="step" data-step="4">
+      <div class="num">4</div>
+      <div class="step-body">
+        <div class="step-head"><h3>Put the project folder in your home folder</h3><span class="time">1 min</span></div>
+        <p>The person who shared this tutorial gave you a folder called <b>agent-frameworks</b>. If it came as a .zip
+        file, <span class="mac">double-click it to unzip it</span><span class="win">right-click it, choose <b>Extract All</b>,
+        and use the folder inside</span>.</p>
+        <p class="mac">In Finder, choose <b>Go &rsaquo; Home</b> and move the <b>agent-frameworks</b> folder there.</p>
+        <p class="win">In File Explorer, click in the address bar, type <code>%USERPROFILE%</code> and press
+        <kbd>Enter</kbd>. That is your home folder (the one with Desktop, Documents and Downloads in it). Move the
+        <b>agent-frameworks</b> folder there.</p>
+        <p>Then tell <span class="mac">Terminal</span><span class="win">PowerShell</span> to work inside that folder:</p>
+        <div class="term">
+          <div class="term-bar"><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>cd ~/agent-frameworks</code></pre>
+        </div>
+        <p><code>cd</code> means "change folder", and <code>~</code> is your home folder.</p>
+        <div class="note">
+          <strong>Folder somewhere else?</strong>
+          <p>Type <code>cd</code> and a space, then drag the folder from <span class="mac">Finder</span><span class="win">File
+          Explorer</span> onto the <span class="mac">Terminal</span><span class="win">PowerShell</span> window. Its location
+          appears after <code>cd</code>. Press <span class="mac"><kbd>Return</kbd></span><span class="win"><kbd>Enter</kbd></span>.
+          In the later steps, use that location wherever this page says <code>~/agent-frameworks</code>.</p>
+        </div>
+        <div class="see"><b>Check</b><p>Paste <code>ls</code> (it lists the folder). You should see names like
+        <code>README.md</code>, <code>contracts</code> and <code>langgraph-tutorial</code>.</p></div>
+        <label class="donebox"><input type="checkbox" id="done-4"> Done</label>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="step" data-step="5">
+      <div class="num">5</div>
+      <div class="step-body">
+        <div class="step-head"><h3>Download the AI model</h3><span class="time">5 to 30 min</span></div>
+        <p>Choose the size that fits your computer (see <a href="#check">the table above</a>). The commands below change to match.</p>
+        <div class="picker" role="group" aria-label="Choose a model size">
+          <button class="pick" type="button" data-model="8b" aria-pressed="true"><b>Standard (8B)</b><span>5.5 GB. Best answers. The lessons were written with this one.</span></button>
+          <button class="pick" type="button" data-model="4b" aria-pressed="false"><b>Smaller (4B)</b><span>2.9 GB. For 8 GB of memory or no graphics card.</span></button>
+          <button class="pick" type="button" data-model="1.7b" aria-pressed="false"><b>Smallest (1.7B)</b><span>1.6 GB. For older computers. Expect many more mistakes.</span></button>
+        </div>
+        <p>The model is <b>Qwen3</b>, a free model from Alibaba. The last line makes a copy named <b>qwen3-agents</b> with
+        fixed settings, so every tutorial uses exactly the same model; the copy takes no extra space. Paste all three
+        lines at once; they run one after another.</p>
+        <div class="term">
+          <div class="term-bar"><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>ollama pull <span data-model-tag>qwen3:8b</span>
+ollama pull nomic-embed-text
+ollama create qwen3-agents -f contracts/ollama/<span data-modelfile>Modelfile</span></code></pre>
+        </div>
+        <p>You will see progress bars. The last line must run from inside the <b>agent-frameworks</b> folder, so if you
+        closed the window since step 4, paste <code>cd ~/agent-frameworks</code> first.</p>
+        <div class="see"><b>Check</b><p>The last line printed is <code>success</code>.</p></div>
+        <p>To change size later, choose another size here and paste the box again. It replaces the old
+        <b>qwen3-agents</b>; to free the space of the old download, see <a href="#remove">Removing it all</a>.</p>
+        <label class="donebox"><input type="checkbox" id="done-5"> Done</label>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="step" data-step="6">
+      <div class="num">6</div>
+      <div class="step-body">
+        <div class="step-head"><h3>Choose a tutorial and install it</h3><span class="time">1 to 3 min each</span></div>
+        <p>The three tutorials teach the same lessons and build the same two agents, each with a different toolkit. Pick
+        one to start with; the commands below change to match. You can come back and install the others later by
+        repeating steps 6 to 8.</p>
+        <div class="picker" role="group" aria-label="Choose a tutorial">
+          <button class="pick" type="button" data-tut="langgraph" aria-pressed="true"><b>LangGraph</b><span>You draw each step as a flowchart. The most control. A good first choice.</span></button>
+          <button class="pick" type="button" data-tut="crewai" aria-pressed="false"><b>CrewAI</b><span>A team of AI "crew members", each with a role and a goal.</span></button>
+          <button class="pick" type="button" data-tut="strands" aria-pressed="false"><b>Strands Agents</b><span>One agent with tools, kept as short and simple as possible.</span></button>
+        </div>
+        <div class="term">
+          <div class="term-bar"><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>cd ~/agent-frameworks/<span data-tut-folder>langgraph-tutorial</span>
+uv sync</code></pre>
+        </div>
+        <p><code>uv sync</code> downloads Python and the toolkit into this tutorial's folder only.</p>
+        <div class="see"><b>Check</b><p>It ends with a list of installed packages and the ready line comes back
+        with no message in red.</p></div>
+        <label class="donebox"><input type="checkbox" id="done-6"> Done</label>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="step" data-step="7">
+      <div class="num">7</div>
+      <div class="step-body">
+        <div class="step-head"><h3>Check that everything works</h3><span class="time">under a minute</span></div>
+        <p>The project comes with a checker. It tests each piece and finally asks the AI model to reply with one word.</p>
+        <div class="term">
+          <div class="term-bar"><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>uv run python check_setup.py</code></pre>
+        </div>
+        <p>A good result looks like this (the version numbers can differ). Every line starts with <b>ok</b>:</p>
+        <div class="term" role="group" aria-label="Example of a successful check">
+          <div class="term-bar"><span class="term-title">What you should see</span></div>
+          <pre class="out">Checking the LangGraph tutorial
+
+<span class="k">ok</span>    python: 3.13.13
+<span class="k">ok</span>    langgraph: 1.2.19
+<span class="k">ok</span>    langchain: 1.4.8
+<span class="k">ok</span>    langchain-ollama: 1.1.0
+<span class="k">ok</span>    agent_contracts: the shared contract is installed
+<span class="k">ok</span>    lg_agents: this tutorial's agents import
+<span class="k">ok</span>    ollama: version 0.40.13 at http://localhost:11434
+<span class="k">ok</span>    model: qwen3-agents (8.2B) with the shared settings
+<span class="k">ok</span>    model call: 'ready'
+
+All set: open notebooks/00_introduction.ipynb.</pre>
+        </div>
+        <p>The number in brackets is the model size you chose. With a smaller model the checker adds a
+        <b>note</b> line saying so; that is expected, not a problem.</p>
+        <p>If a line says <b>FAIL</b>, the line under it starts with <b>fix:</b> and says what to do. The
+        <a href="#trouble">troubleshooting table</a> below explains the common ones.</p>
+        <label class="donebox"><input type="checkbox" id="done-7"> Done</label>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="step" data-step="8">
+      <div class="num">8</div>
+      <div class="step-body">
+        <div class="step-head"><h3>Open the lessons</h3><span class="time">a few seconds</span></div>
+        <p>The lessons are <b>notebooks</b>: pages that mix explanations with small pieces of code you can run and see the
+        result of. They open in your web browser through an app called Jupyter.</p>
+        <div class="term">
+          <div class="term-bar"><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>uv run jupyter lab notebooks/</code></pre>
+        </div>
+        <p>A browser tab opens. <b>Leave the <span class="mac">Terminal</span><span class="win">PowerShell</span> window
+        open</b> while you work; closing it stops Jupyter.</p>
+        <ol class="plain">
+          <li>In the file list on the left, double-click <b>00_introduction.ipynb</b>.</li>
+          <li>Each grey box is a <b>cell</b>. Click one and press <kbd>Shift</kbd> + <span class="mac"><kbd>Return</kbd></span><span class="win"><kbd>Enter</kbd></span>
+            to run it and move to the next. Or use <b>Run &rsaquo; Run All Cells</b> to run the whole lesson.</li>
+          <li>While a cell runs, the brackets beside it show <code>[*]</code>. When it finishes they show a number, and the result appears below.</li>
+          <li>Cells that ask the AI something can take a minute or more, longer on a computer without a graphics card. That is normal.</li>
+        </ol>
+        <p>When you are done for the day, choose <b>File &rsaquo; Shut Down</b> in Jupyter, then close the
+        <span class="mac">Terminal</span><span class="win">PowerShell</span> window.</p>
+        <label class="donebox"><input type="checkbox" id="done-8"> Done</label>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="later">
+  <h2>Coming back another day</h2>
+  <p>Ollama starts by itself when you log in, so open <span class="mac">Terminal</span><span class="win">PowerShell</span>
+  and paste this:</p>
+  <div class="term">
+    <div class="term-bar"><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+    <pre><code>cd ~/agent-frameworks/<span data-tut-folder>langgraph-tutorial</span>
+uv run jupyter lab notebooks/</code></pre>
+  </div>
+  <p style="color:var(--muted);font-size:.9rem">The folder follows the tutorial you picked in step 6.</p>
+</section>
+
+<section id="lessons">
+  <h2>What is in each tutorial</h2>
+  <p>All three tutorials have the same nine lessons in the same order, so you can open the same lesson in two
+  toolkits side by side and compare. Take them in order. Along the way you build two agents: <b>ShipFast</b>, a
+  customer-support helper for a made-up online shop that must ask a person before giving any refund over $100,
+  and a <b>research agent</b> that answers questions from a set of articles and checks its own answer.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Lesson</th><th>What you learn</th></tr></thead>
+      <tbody>
+        <tr><td class="n">00</td><td>Introduction</td><td>What the toolkit is, its main idea, and a setup check</td></tr>
+        <tr><td class="n">01</td><td>The model</td><td>Talk to the AI model and get answers in a fixed format</td></tr>
+        <tr><td class="n">02</td><td>Tools</td><td>Let the AI use tools, such as looking up an order</td></tr>
+        <tr><td class="n">03</td><td>The agent</td><td>Combine model, instructions and tools into an agent, and see how it decides when to stop</td></tr>
+        <tr><td class="n">04</td><td>State and memory</td><td>Remember a conversation across messages</td></tr>
+        <tr><td class="n">05</td><td>Orchestration</td><td>Chain steps into a workflow where the AI checks its own draft</td></tr>
+        <tr><td class="n">06</td><td>Guardrails and approval</td><td>Pause before a refund over $100 until a person says yes</td></tr>
+        <tr><td class="n">07</td><td>Tracing and evaluation</td><td>Measure cost and time, and score answers automatically</td></tr>
+        <tr><td class="n">08</td><td>Capstone</td><td>Both agents finished and tested</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note good">
+    <strong>Your results may differ a little</strong>
+    <p>Each lesson describes what happened when we ran it with the standard model, mistakes included. A small AI model
+    does not always give exactly the same answer, so yours may be worded differently or make a different mistake,
+    and more so with a smaller model. That is part of what the lessons teach.</p>
+  </div>
+</section>
+
+<section id="trouble">
+  <h2>If something goes wrong</h2>
+  <p>Find the message you see in the left column. Most problems are fixed by one command.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>You see</th><th>What it means and what to do</th></tr></thead>
+      <tbody>
+        <tr class="mac"><td><code>command not found: brew</code></td><td>Terminal cannot find Homebrew yet. Paste the second box from step 1, or close Terminal and open it again.</td></tr>
+        <tr class="mac"><td><code>command not found: ollama</code> or <code>uv</code></td><td>Step 2 did not finish. Paste its command again.</td></tr>
+        <tr class="win"><td><code>uv</code> or <code>ollama</code> <code>is not recognized</code></td><td>PowerShell has not noticed the new program yet. Close PowerShell, open it again, and retry. If it persists, repeat step 1 or 2.</td></tr>
+        <tr class="win"><td><code>running scripts is disabled on this system</code></td><td>Paste the step 2 command exactly as it is; its <code>-ExecutionPolicy ByPass</code> part allows that one installer.</td></tr>
+        <tr><td><code>Ollama is not reachable</code>, or <code>Couldn't connect</code></td><td>Ollama is not running. <span class="mac">Paste <code>brew services start ollama</code></span><span class="win">Open <b>Ollama</b> from the Start menu</span>, wait ten seconds and try again.</td></tr>
+        <tr><td><code>Ollama has no model 'qwen3-agents'</code></td><td>The last line of step 5 did not run. Paste <code>cd ~/agent-frameworks</code>, then the step 5 box again (finished downloads are skipped).</td></tr>
+        <tr><td><code>does not carry the shared settings</code></td><td>The model was made some other way. Paste <code>cd ~/agent-frameworks</code>, then the step 5 box again.</td></tr>
+        <tr><td><code>no such file or directory</code> or <code>Cannot find path</code> after <code>cd</code></td><td>The folder is not where the command expects. Use the drag-the-folder trick from step 4.</td></tr>
+        <tr><td><code>No pyproject.toml found</code></td><td>uv was run outside a tutorial folder. Paste the <code>cd</code> line from step 6 first.</td></tr>
+        <tr><td>A <b>FAIL</b> line in the check</td><td>Read the <b>fix:</b> line under it and do what it says. If it says to run <code>uv sync</code>, repeat step 6.</td></tr>
+        <tr><td>Very slow answers, or the computer freezes</td><td>The model uses most of the computer's memory. Quit other apps, especially browsers with many tabs. If it is still too slow, switch to a smaller model in step 5.</td></tr>
+        <tr><td>Jupyter says the <b>kernel died</b> or is restarting</td><td>Usually the same memory problem. Quit other apps, or switch to a smaller model, then choose <b>Kernel &rsaquo; Restart Kernel and Run All Cells</b>.</td></tr>
+        <tr><td>An error in red under a notebook cell</td><td>Run the cells in order from the top; a cell often needs the ones above it. If it persists, run the check from step 7 again.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="remove">
+  <h2>Removing it all later</h2>
+  <p>To free the disk space when you are finished, paste this. It deletes the AI models of every size<span class="mac"> and stops Ollama</span>.
+  A model you never downloaded is reported as "not found"; that is fine.</p>
+  <div class="term">
+    <div class="term-bar"><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+    <pre><code>ollama rm qwen3-agents
+ollama rm qwen3:8b
+ollama rm qwen3:4b-q4_K_M
+ollama rm qwen3:1.7b
+ollama rm nomic-embed-text
+uv cache clean</code></pre>
+  </div>
+  <p class="mac">Then paste <code>brew services stop ollama</code> and drag the <b>agent-frameworks</b> folder to the
+  Trash. To remove the tools as well, paste <code>brew uninstall ollama uv</code>.</p>
+  <p class="win">Then delete the <b>agent-frameworks</b> folder. To remove Ollama as well, open
+  <b>Settings &rsaquo; Apps &rsaquo; Installed apps</b>, find <b>Ollama</b> and choose <b>Uninstall</b>. uv is one small
+  program and can stay.</p>
+</section>
+
+<section id="words">
+  <h2>Words you will meet</h2>
+  <dl class="gloss">
+    <dt>Agent</dt><dd>An AI model that can use tools (look up an order, search articles) and decide its next step until the job is done.</dd>
+    <dt>Model</dt><dd>The AI itself: the file that reads text and writes a reply. Here it is Qwen3, running on your computer.</dd>
+    <dt>8B, 4B, 1.7B</dt><dd>The model's size, in billions of "parameters". Bigger is smarter but needs more memory and is slower.</dd>
+    <dt>Ollama</dt><dd>The app that runs the model in the background.</dd>
+    <dt><span class="mac">Terminal</span><span class="win">PowerShell</span></dt><dd>The app where you paste commands.</dd>
+    <dt>Command</dt><dd>One line of text that tells the computer to do something, run by pressing <span class="mac">Return</span><span class="win">Enter</span>.</dd>
+    <dt class="mac">Homebrew</dt><dd class="mac">An installer for developer tools on the Mac.</dd>
+    <dt>uv</dt><dd>A tool that installs Python and each tutorial's building blocks, kept separate per tutorial.</dd>
+    <dt>Jupyter</dt><dd>The app that shows notebooks in your browser.</dd>
+    <dt>Notebook</dt><dd>A lesson file (ending in .ipynb) that mixes explanations with code you can run.</dd>
+    <dt>Cell</dt><dd>One box in a notebook. Code cells can be run; their result appears underneath.</dd>
+    <dt>Kernel</dt><dd>The engine behind a notebook that runs its code. Restarting it is like a fresh start for the lesson.</dd>
+  </dl>
+</section>
+
+<footer>
+  <p>Tested on a Mac with an M4 chip and 16 GB of memory, with the standard model. Windows and the smaller models use
+  the same steps but have not been tested end to end yet. For the technical version of this guide, see
+  <code>README.md</code> in the project folder.</p>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+  function press(buttons, attr, value) {
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset[attr] === value)); });
+  }
+
+  // Mac or Windows: shows only that system's instructions.
+  var osButtons = document.querySelectorAll('.seg button');
+  function setOs(os) {
+    root.setAttribute('data-os', os);
+    press(osButtons, 'os', os);
+    document.querySelectorAll('.term-title').forEach(function (t) {
+      if (t.textContent === 'Terminal' || t.textContent === 'PowerShell') t.textContent = os === 'win' ? 'PowerShell' : 'Terminal';
+    });
+    store.set('af-os', os);
+  }
+  osButtons.forEach(function (b) { b.addEventListener('click', function () { setOs(b.dataset.os); }); });
+  var savedOs = store.get('af-os');
+  var guess = /Win/i.test(navigator.platform || navigator.userAgent || '') ? 'win' : 'mac';
+  setOs(savedOs === 'mac' || savedOs === 'win' ? savedOs : guess);
+
+  // Copy buttons: copy the command text in the nearest terminal box.
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var code = btn.closest('.term').querySelector('pre code');
+      var text = code.innerText.replace(/\n+$/, '');
+      var done = function () {
+        btn.textContent = 'Copied'; btn.classList.add('done');
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1800);
+      };
+      var fallback = function () {
+        var range = document.createRange(); range.selectNodeContents(code);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        btn.textContent = root.getAttribute('data-os') === 'win' ? 'Press Ctrl+C' : 'Press Cmd+C';
+      };
+      try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+    });
+  });
+
+  // Tutorial picker: swaps the folder name in every command that uses it.
+  var tutButtons = document.querySelectorAll('.pick[data-tut]');
+  function setTut(tut) {
+    press(tutButtons, 'tut', tut);
+    document.querySelectorAll('[data-tut-folder]').forEach(function (s) { s.textContent = tut + '-tutorial'; });
+    store.set('af-tutorial', tut);
+  }
+  tutButtons.forEach(function (b) { b.addEventListener('click', function () { setTut(b.dataset.tut); }); });
+  var savedTut = store.get('af-tutorial');
+  if (savedTut === 'langgraph' || savedTut === 'crewai' || savedTut === 'strands') setTut(savedTut);
+
+  // Model size picker: swaps the download and the Modelfile in step 5.
+  var MODELS = {
+    '8b': { tag: 'qwen3:8b', file: 'Modelfile' },
+    '4b': { tag: 'qwen3:4b-q4_K_M', file: 'Modelfile.4b' },
+    '1.7b': { tag: 'qwen3:1.7b', file: 'Modelfile.1.7b' }
+  };
+  var modelButtons = document.querySelectorAll('.pick[data-model]');
+  function setModel(m) {
+    press(modelButtons, 'model', m);
+    document.querySelectorAll('[data-model-tag]').forEach(function (s) { s.textContent = MODELS[m].tag; });
+    document.querySelectorAll('[data-modelfile]').forEach(function (s) { s.textContent = MODELS[m].file; });
+    store.set('af-model', m);
+  }
+  modelButtons.forEach(function (b) { b.addEventListener('click', function () { setModel(b.dataset.model); }); });
+  var savedModel = store.get('af-model');
+  if (MODELS[savedModel]) setModel(savedModel);
+
+  // Done ticks, remembered in this browser only. A step is done when its visible box is ticked.
+  document.querySelectorAll('.step').forEach(function (step) {
+    var boxes = step.querySelectorAll('input[type=checkbox]');
+    var apply = function () {
+      var os = root.getAttribute('data-os');
+      var shown = Array.prototype.filter.call(boxes, function (b) {
+        var body = b.closest('.step-body');
+        return !(body.classList.contains('mac') && os === 'win') && !(body.classList.contains('win') && os !== 'win');
+      });
+      step.classList.toggle('is-done', shown.some(function (b) { return b.checked; }));
+    };
+    boxes.forEach(function (box) {
+      var key = 'af-' + box.id;
+      box.checked = store.get(key) === '1';
+      box.addEventListener('change', function () { store.set(key, box.checked ? '1' : '0'); apply(); });
+    });
+    apply();
+    osButtons.forEach(function (b) { b.addEventListener('click', apply); });
+  });
+})();
+</script>
+</body>
+</html>

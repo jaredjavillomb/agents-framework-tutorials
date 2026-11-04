@@ -10,54 +10,97 @@ In each framework you learn the building blocks one notebook at a time, then bui
 - **A research agent** that answers questions about a made-up company from a fixed set of articles: it
   plans, searches (at most five tool calls), drafts an answer, critiques the draft and revises it.
 
-Everything runs on your own machine with a small open model through Ollama. There is no API key and
-nothing to pay for.
+Everything runs on your own Mac or Windows PC with a small open model through Ollama. There is no API key
+and nothing to pay for.
 
 ## What you need
 
-- A Mac with Apple silicon and about **16 GB of memory**. The tutorials were written on an M4 with 16 GB.
-  Linux should work with the same tools, but only the Mac has been tested.
-- About **7 GB of free disk**: 5.5 GB for the models, the rest for the three Python environments.
-- [Homebrew](https://brew.sh), to install the two tools below.
-- Time: setup takes 15 to 30 minutes, mostly the model download. Each notebook takes a few minutes to run.
+- **A Mac or a Windows PC.** The tutorials were written and run on an M4 Mac with 16 GB. Windows 10 and 11
+  use the same tools and commands; the dependencies resolve for Windows, but no one has run the tutorials
+  there yet. Linux should work too, with the Mac commands.
+- **Memory, which decides the model size** (see the table below). 16 GB runs the default 8B model.
+- **Disk:** about 7 GB free with the default model, less with a smaller one.
+- **Time:** setup takes 15 to 30 minutes, mostly the model download. Each notebook takes a few minutes.
+
+Not a coder? Open **`README.html`** in your browser instead: the same setup, step by step, with every
+command ready to copy.
+
+### Which model size
+
+Every tutorial uses one model name, `qwen3-agents`. You build it once, from one of three sizes. All three
+carry the same settings, so nothing else changes; only the quality of the answers does.
+
+| Your computer | Build from | Download | Modelfile |
+|---|---|---|---|
+| 16 GB or more, on an Apple silicon Mac or a PC with a graphics card (8 GB or more of its own memory) | `qwen3:8b` (default) | 5.2 GB | `contracts/ollama/Modelfile` |
+| 8 GB, or a PC without a graphics card, or an Intel Mac | `qwen3:4b-q4_K_M` | 2.6 GB | `contracts/ollama/Modelfile.4b` |
+| older or smaller machines | `qwen3:1.7b` | 1.4 GB | `contracts/ollama/Modelfile.1.7b` |
+
+The notes in the notebooks, the results in `results/` and the comparison all come from the 8B. With a
+smaller model expect more mistakes, especially in choosing and calling tools; the 4B and 1.7B have not
+been run through the tutorials yet (DECISIONS.md 20). Without a graphics card the model runs on the
+processor, which works but is slow, so a smaller model is often the better trade.
 
 ## Setup
 
+Commands are the same on Mac and Windows unless marked. On Windows, use **PowerShell**.
+
 **1. Install Ollama and uv.** Ollama serves the model; uv installs Python and each tutorial's packages.
 
+- **Mac**, with [Homebrew](https://brew.sh):
+
+  ```bash
+  brew install ollama uv
+  ```
+
+- **Windows:** install Ollama with the installer from [ollama.com/download](https://ollama.com/download),
+  then install uv in PowerShell and open a new PowerShell window afterwards:
+
+  ```powershell
+  powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+  ```
+
+  (`winget install Ollama.Ollama` and `winget install astral-sh.uv` work too.)
+
+**2. Start Ollama.**
+
+- **Mac:** `brew services start ollama` starts it now and at every login (or run `ollama serve` in its
+  own terminal).
+- **Windows:** the installer starts it, and it starts again at login (look for the llama icon by the
+  clock).
+
+To check, open <http://localhost:11434> in a browser: it says "Ollama is running".
+
+**3. Download the models.** From the repo root, with the size from the table above. The default:
+
 ```bash
-brew install ollama uv
-```
-
-**2. Start Ollama.** Leave it running in its own terminal, or start it as a background service so it also
-starts at login:
-
-```bash
-ollama serve                   # in its own terminal
-# or
-brew services start ollama     # in the background
-```
-
-**3. Download the models.** From the repo root:
-
-```bash
-ollama pull qwen3:8b                                       # the language model, about 5 GB
+ollama pull qwen3:8b                                       # the language model, 5.2 GB
 ollama pull nomic-embed-text                               # a small embedding model, used by CrewAI's memory
 ollama create qwen3-agents -f contracts/ollama/Modelfile   # the shared model every tutorial uses
 ```
 
-`qwen3-agents` is `qwen3:8b` with its settings built in (temperature 0, a fixed seed, a 16K context), so
-all three frameworks run on exactly the same model. It takes no extra disk space.
+For a smaller model, pull its base instead and point `create` at its Modelfile:
+
+```bash
+ollama pull qwen3:4b-q4_K_M                                    # or: ollama pull qwen3:1.7b
+ollama pull nomic-embed-text
+ollama create qwen3-agents -f contracts/ollama/Modelfile.4b    # or: Modelfile.1.7b
+```
+
+`qwen3-agents` is the base model with its settings built in (temperature 0, a fixed seed, a 16K
+context), so all three frameworks run on exactly the same model. It takes no extra disk space. To switch
+sizes later, run `create` again with another Modelfile; it replaces the old `qwen3-agents`.
 
 **4. Install a tutorial's environment.** Each tutorial has its own, because the frameworks' dependencies
 conflict. Always run `uv` inside a tutorial folder, never at the repo root:
 
 ```bash
-cd langgraph-tutorial && uv sync     # likewise in crewai-tutorial/ and strands-tutorial/
+cd langgraph-tutorial
+uv sync
 ```
 
-uv downloads a suitable Python (3.12 or 3.13) if you do not have one. You only need the tutorials you plan
-to follow.
+Likewise in `crewai-tutorial` and `strands-tutorial`. uv downloads a suitable Python (3.12 or 3.13) if you
+do not have one. You only need the tutorials you plan to follow.
 
 **5. Check it works.** Still in the tutorial folder:
 
@@ -65,17 +108,18 @@ to follow.
 uv run python check_setup.py
 ```
 
-It checks Python, the framework, the shared contract, Ollama and the models, then makes one short call to
-the model. Every line should say `ok`; anything that says `FAIL` comes with the command that fixes it.
-When it ends with "All set", open `notebooks/00_introduction.ipynb`.
+It checks Python, the framework, the shared contract, Ollama and the model (and prints its size), then
+makes one short call to the model. Every line should say `ok`; anything that says `FAIL` comes with the
+command that fixes it. When it ends with "All set", open `notebooks/00_introduction.ipynb`.
 
 ## Following a tutorial
 
 Open the notebooks with the tutorial's own environment as the kernel. Either:
 
-- **VS Code:** open the repo, open a notebook, choose *Select Kernel*, then *Python Environments*, and pick
-  the `.venv` inside that tutorial's folder (for example `langgraph-tutorial/.venv`).
 - **Jupyter:** from the tutorial folder, run `uv run jupyter lab notebooks/`.
+- **VS Code:** open the repo, open a notebook, choose *Select Kernel*, then *Python Environments*, and pick
+  the `.venv` inside that tutorial's folder (for example `langgraph-tutorial/.venv`; on Windows its
+  Python is `.venv\Scripts\python.exe`).
 
 Work through the notebooks in order. Every tutorial has the same nine, so you can read the same notebook
 in two frameworks side by side:
@@ -176,9 +220,11 @@ Start with `uv run python check_setup.py` in the tutorial folder; it names most 
 
 | What you see | What to do |
 |---|---|
-| `Ollama is not reachable` | Start Ollama (`ollama serve` or `brew services start ollama`). |
+| `Ollama is not reachable` | Start Ollama: on a Mac `brew services start ollama`; on Windows open the Ollama app from the Start menu. |
 | `Ollama has no model 'qwen3-agents'`, or the model `does not carry the shared settings` | Run `ollama create qwen3-agents -f contracts/ollama/Modelfile` from the repo root. |
 | `ModuleNotFoundError` for `lg_agents`, `crew_agents`, `strands_agents_impl` or `agent_contracts` | The notebook is on the wrong kernel. Pick the `.venv` inside that tutorial's folder, or run `uv sync` there. |
 | CrewAI notebook 04 fails on embeddings | Run `ollama pull nomic-embed-text`. |
 | CrewAI says it cannot run inside an event loop | Use the `_async` form, such as `await crew.kickoff_async()`; the notebooks already do. |
-| Very slow answers | Close other memory-hungry apps. An 8B model wants most of 16 GB while it runs. |
+| Very slow answers | Close other memory-hungry apps. An 8B model wants most of 16 GB while it runs. If it stays slow, switch to a smaller model (step 3). |
+| `uv` or `ollama` is not recognized (Windows) | Open a new PowerShell window after installing, so it picks up the new programs. |
+| `running scripts is disabled on this system` (Windows) | Use the uv install command exactly as given; its `-ExecutionPolicy ByPass` allows that one script. |
