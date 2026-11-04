@@ -59,9 +59,15 @@ cd langgraph-tutorial && uv sync     # likewise in crewai-tutorial/ and strands-
 uv downloads a suitable Python (3.12 or 3.13) if you do not have one. You only need the tutorials you plan
 to follow.
 
-**5. Check it works.** Open the tutorial's first notebook, `notebooks/00_introduction.ipynb`, and run its
-setup cell (see below for how). It prints the model name and the framework's version. If it does, you are
-ready.
+**5. Check it works.** Still in the tutorial folder:
+
+```bash
+uv run python check_setup.py
+```
+
+It checks Python, the framework, the shared contract, Ollama and the models, then makes one short call to
+the model. Every line should say `ok`; anything that says `FAIL` comes with the command that fixes it.
+When it ends with "All set", open `notebooks/00_introduction.ipynb`.
 
 ## Following a tutorial
 
@@ -165,6 +171,8 @@ CrewAI sends anonymous usage data by default; `crew_agents` turns that off, and 
 switches.
 
 ## Troubleshooting
+
+Start with `uv run python check_setup.py` in the tutorial folder; it names most problems and their fixes.
 
 | What you see | What to do |
 |---|---|
