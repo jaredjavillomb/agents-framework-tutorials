@@ -205,14 +205,18 @@ uv run --with pytest pytest -q ../contracts/tests
 
 ## Settings you can change
 
-Copy `.env.example` to `.env` to override the defaults. The two that matter:
+There is nothing to configure: every tutorial uses `qwen3-agents` on `http://localhost:11434`. For a
+smaller model, rebuild `qwen3-agents` from another Modelfile (setup step 3) rather than changing a setting.
 
-- `MODEL`: a different Ollama model (the default is `qwen3-agents`). The comparison numbers only hold for
-  the default.
+Two environment variables override the defaults, for example `OLLAMA_HOST=http://otherbox:11434 uv run
+jupyter lab notebooks/` (in PowerShell, set `$env:OLLAMA_HOST = "..."` first):
+
+- `MODEL`: a different Ollama model. The notes in the notebooks and the comparison only hold for the
+  default.
 - `OLLAMA_HOST`: if Ollama runs somewhere other than `http://localhost:11434`.
 
-CrewAI sends anonymous usage data by default; `crew_agents` turns that off, and `.env.example` shows the
-switches.
+CrewAI sends anonymous usage data by default; `crew_agents` turns that off (set
+`CREWAI_DISABLE_TELEMETRY=false` to turn it back on).
 
 ## Troubleshooting
 

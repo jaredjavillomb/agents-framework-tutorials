@@ -1,8 +1,8 @@
 """CrewAI build of the shared agents.
 
 This project runs locally (DECISIONS.md 4), so CrewAI's anonymous usage telemetry and its cloud tracing
-prompt are switched off before CrewAI is imported. These are defaults: set the variables in `.env` or the
-shell to override them.
+prompt are switched off before CrewAI is imported. These are defaults: set the variables in the
+environment to override them.
 
 CrewAI also prints boxed panels for every tool run. They follow a crew's `verbose` flag, but a standalone
 `Agent.kickoff` always prints them, so they are off by default here; `show_panels(True)` turns them on.
