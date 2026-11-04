@@ -237,6 +237,17 @@ def test_modelfile_matches_settings():
     assert "PARAMETER temperature 0" in text
 
 
+def test_smaller_modelfiles_carry_the_same_settings():
+    from pathlib import Path
+    from agent_contracts.harness.settings import SMALLER_MODELFILES
+    folder = Path(__file__).parents[1] / "ollama"
+    main = [l for l in (folder / "Modelfile").read_text().splitlines() if l.startswith("PARAMETER")]
+    for name, base in SMALLER_MODELFILES.items():
+        lines = (folder / name).read_text().splitlines()
+        assert f"FROM {base}" in lines
+        assert [l for l in lines if l.startswith("PARAMETER")] == main
+
+
 def test_verify_model_parses_parameters_and_reports_unreachable():
     from agent_contracts.harness.settings import ModelSettings, _model_parameters
     params = _model_parameters({"parameters": 'num_ctx                        16384\nseed 42\nstop "<|im_end|>"'})

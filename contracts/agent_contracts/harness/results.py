@@ -50,5 +50,5 @@ def write_results(agent: Agent, framework: Framework, framework_version: str, mo
     path = Path(base) / agent / f"{framework}.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     data = build_results(agent, framework, framework_version, model, items)
-    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return path

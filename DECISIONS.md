@@ -217,6 +217,20 @@ a concept-to-notebook map, how the tutorial works (with a shared roadmap diagram
 Rejected: leaving each framework's ethos to the scattered "How the others do this" notes and
 `COMPARISON.md`, which a reader only meets after learning the framework.
 
+## 20. Smaller stand-in models, built under the same name
+
+Decided by Jared on 2026-11-04. For computers that cannot run `qwen3:8b` (8 GB of memory, older laptops,
+PCs without a graphics card), `contracts/ollama/Modelfile.4b` and `Modelfile.1.7b` build `qwen3-agents`
+from `qwen3:4b-q4_K_M` or `qwen3:1.7b` with the same settings. Same name, so no build, notebook or
+setting changes, and `verify_model()` still passes. The 4B tag is pinned: plain `qwen3:4b` now points
+to the thinking-only 2507 build (checked in Ollama's registry on 2026-11-04), whose chat template differs
+from `qwen3:8b`'s; `4b-q4_K_M` and `1.7b` share the 8B's template. Scores, notebook notes and the
+comparison hold only for the 8B. The smaller models have not been run through the tutorials.
+
+Rejected: a separate model name chosen through `MODEL` (needs an environment variable per session,
+which non-coders following the setup guide would get wrong); plain
+`qwen3:4b` (the different build above).
+
 ## Open
 
 - Who edits `contracts/`. Recommended: one neutral owner, framework sessions only read and request

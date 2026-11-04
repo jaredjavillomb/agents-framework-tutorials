@@ -1,0 +1,12 @@
+# A smaller stand-in for the shared model, for computers that cannot run qwen3:8b (DECISIONS.md 20).
+# Create it under the same name, so nothing else changes:
+#   ollama pull qwen3:1.7b
+#   ollama create qwen3-agents -f contracts/ollama/Modelfile.1.7b
+# This replaces the 8B qwen3-agents if you had it; run the main Modelfile again to switch back.
+# Download 1.4 GB; needs about 3.5 GB of memory with the 16K context. For older computers. Expect
+# many more mistakes, especially with tools.
+# Same Qwen3 release and chat template as qwen3:8b. The settings below must match the main Modelfile.
+FROM qwen3:1.7b
+PARAMETER num_ctx 16384
+PARAMETER temperature 0
+PARAMETER seed 42

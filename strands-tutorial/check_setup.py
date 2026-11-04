@@ -70,7 +70,10 @@ except OSError:
 
 try:
     verify_model(settings)
-    check("model", True, f"{settings.model} with the shared settings")
+    size = ollama("/api/show", {"model": settings.model}).get("details", {}).get("parameter_size", "?")
+    check("model", True, f"{settings.model} ({size}) with the shared settings")
+    if not size.startswith("8"):
+        print("      note: a smaller stand-in model; your answers will differ more from the notes in the notebooks")
     model_ok = True
 except RuntimeError as exc:
     model_ok = check("model", False, str(exc).split(". ")[0], str(exc).split(": ", 1)[-1].replace(" contracts/", " ../contracts/"))

@@ -18,6 +18,9 @@ from dataclasses import dataclass
 
 DEFAULT_MODEL = "qwen3-agents"
 BASE_MODEL = "qwen3:8b"
+# Smaller stand-ins for computers that cannot run the 8B (DECISIONS.md 20). Each Modelfile builds the
+# same name, qwen3-agents, with the same settings; results are only comparable on BASE_MODEL.
+SMALLER_MODELFILES = {"Modelfile.4b": "qwen3:4b-q4_K_M", "Modelfile.1.7b": "qwen3:1.7b"}
 DEFAULT_HOST = "http://localhost:11434"
 CREATE_HINT = "ollama create qwen3-agents -f contracts/ollama/Modelfile"
 
