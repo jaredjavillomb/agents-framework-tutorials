@@ -207,6 +207,16 @@ like for like.
 Rejected: a copy in each build. Nothing changes today, but every later wording change would have to be made
 three times, and a missed copy would give one framework different instructions without anyone noticing.
 
+## 19. An introduction notebook in every tutorial
+
+Decided by Jared on 2026-11-04. Each tutorial opens with `00_introduction.ipynb`: what the framework is
+(quoted from its own package README), its core idea with a diagram (`notebooks/images/`), how the
+crash course framed it (LangGraph and CrewAI; the deck does not cover Strands), what this project found,
+a concept-to-notebook map, how the tutorial works (with a shared roadmap diagram), and a setup check.
+
+Rejected: leaving each framework's ethos to the scattered "How the others do this" notes and
+`COMPARISON.md`, which a reader only meets after learning the framework.
+
 ## Open
 
 - Who edits `contracts/`. Recommended: one neutral owner, framework sessions only read and request

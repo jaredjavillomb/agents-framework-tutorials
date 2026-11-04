@@ -1,6 +1,7 @@
 # Tutorial outline (all three frameworks)
 
-Approved by Jared on 2026-11-03 (DECISIONS.md 13). Every tutorial has the same seven component
+Approved by Jared on 2026-11-03 (DECISIONS.md 13), with an introduction added on 2026-11-04 (DECISIONS.md 19).
+Every tutorial opens with `00_introduction`, then has the same seven component
 notebooks, with the same names, in the same order, so a reader can compare frameworks notebook by
 notebook. The capstone notebooks that build ShipFast and the research agent come after them (Otoma
 tasks 6 to 8).
@@ -11,6 +12,7 @@ taught before the agent, because an agent is the two of them together.
 
 | # | Notebook | What it teaches | LangGraph | CrewAI | Strands |
 |---|---|---|---|---|---|
+| 00 | `00_introduction` | What the framework is, its core idea (with a diagram), how the course framed it, what this project found, how the tutorial works, a setup check | LangGraph | CrewAI | Strands |
 | 01 | `01_model` | Connect to `qwen3-agents`, one call, structured output (ShipFast `Triage`) | `ChatOllama`, structured output | `LLM("ollama/...")` | `OllamaModel` |
 | 02 | `02_tools` | Wrap the shared tools, one correct tool call | `@tool`, `bind_tools` | `@tool` | `@tool` |
 | 03 | `03_agent` | Model + instructions + tools, the agent loop and its stop condition | `create_agent` | `Agent` + `Task` + `Crew` | `Agent` |

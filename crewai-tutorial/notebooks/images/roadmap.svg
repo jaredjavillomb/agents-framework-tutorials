@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="230" viewBox="0 0 880 230" font-family="Helvetica, Arial, sans-serif">
+  <rect width="880" height="230" fill="#ffffff"/>
+  <text x="20" y="30" font-size="17" font-weight="bold" fill="#0f172a">The path through every tutorial</text>
+  <g font-size="12" fill="#0f172a">
+    <g>
+      <rect x="20" y="50" width="92" height="64" rx="8" fill="#dbeafe" stroke="#2563eb"/><text x="66" y="76" text-anchor="middle" font-weight="bold">01</text><text x="66" y="96" text-anchor="middle">model</text>
+      <rect x="122" y="50" width="92" height="64" rx="8" fill="#dbeafe" stroke="#2563eb"/><text x="168" y="76" text-anchor="middle" font-weight="bold">02</text><text x="168" y="96" text-anchor="middle">tools</text>
+      <rect x="224" y="50" width="92" height="64" rx="8" fill="#dbeafe" stroke="#2563eb"/><text x="270" y="76" text-anchor="middle" font-weight="bold">03</text><text x="270" y="96" text-anchor="middle">agent</text>
+      <rect x="326" y="50" width="92" height="64" rx="8" fill="#dcfce7" stroke="#16a34a"/><text x="372" y="76" text-anchor="middle" font-weight="bold">04</text><text x="372" y="96" text-anchor="middle">memory</text>
+      <rect x="428" y="50" width="92" height="64" rx="8" fill="#dcfce7" stroke="#16a34a"/><text x="474" y="76" text-anchor="middle" font-weight="bold">05</text><text x="474" y="96" text-anchor="middle">orchestration</text>
+      <rect x="530" y="50" width="92" height="64" rx="8" fill="#dcfce7" stroke="#16a34a"/><text x="576" y="76" text-anchor="middle" font-weight="bold">06</text><text x="576" y="96" text-anchor="middle">approval</text>
+      <rect x="632" y="50" width="92" height="64" rx="8" fill="#ede9fe" stroke="#7c3aed"/><text x="678" y="76" text-anchor="middle" font-weight="bold">07</text><text x="678" y="96" text-anchor="middle">tracing, eval</text>
+      <rect x="734" y="50" width="126" height="64" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/><text x="797" y="76" text-anchor="middle" font-weight="bold">08 capstone</text><text x="797" y="96" text-anchor="middle">both agents, scored</text>
+    </g>
+    <rect x="20" y="132" width="296" height="22" rx="4" fill="#eff6ff"/><text x="168" y="148" text-anchor="middle">the pieces: a model that can use tools</text>
+    <rect x="326" y="132" width="296" height="22" rx="4" fill="#f0fdf4"/><text x="474" y="148" text-anchor="middle">the building blocks around an agent</text>
+    <rect x="632" y="132" width="228" height="22" rx="4" fill="#faf5ff"/><text x="746" y="148" text-anchor="middle">measured the same way everywhere</text>
+    <text x="20" y="188" font-size="13" fill="#334155">Same notebooks, same order, same data and model in LangGraph, CrewAI and Strands: read one notebook in two</text>
+    <text x="20" y="208" font-size="13" fill="#334155">frameworks side by side, and the only thing that changes is the framework.</text>
+  </g>
+</svg>

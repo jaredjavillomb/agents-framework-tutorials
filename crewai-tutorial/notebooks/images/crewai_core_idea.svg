@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="340" viewBox="0 0 820 340" font-family="Helvetica, Arial, sans-serif">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#334155"/></marker></defs>
+  <rect width="820" height="340" fill="#ffffff"/>
+  <text x="20" y="30" font-size="17" font-weight="bold" fill="#0f172a">CrewAI: agents with roles do the work; Flows give it structure</text>
+  <text x="20" y="62" font-size="13" font-weight="bold" fill="#7c3aed">Flow (code decides the steps, shared typed state)</text>
+  <g font-size="12" fill="#0f172a">
+    <rect x="20" y="74" width="130" height="50" rx="8" fill="#ede9fe" stroke="#7c3aed"/><text x="85" y="96" text-anchor="middle" font-weight="bold">@start</text><text x="85" y="113" text-anchor="middle">triage</text>
+    <rect x="190" y="74" width="130" height="50" rx="8" fill="#ede9fe" stroke="#7c3aed"/><text x="255" y="96" text-anchor="middle" font-weight="bold">@router</text><text x="255" y="113" text-anchor="middle">returns a label</text>
+    <rect x="360" y="74" width="230" height="50" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/><text x="475" y="96" text-anchor="middle" font-weight="bold">@listen("in_scope")</text><text x="475" y="113" text-anchor="middle">runs a crew or an agent (below)</text>
+    <rect x="630" y="74" width="170" height="50" rx="8" fill="#ede9fe" stroke="#7c3aed"/><text x="715" y="96" text-anchor="middle" font-weight="bold">@human_feedback</text><text x="715" y="113" text-anchor="middle">pause between steps</text>
+    <line x1="150" y1="99" x2="186" y2="99" stroke="#334155" stroke-width="1.6" marker-end="url(#a)"/>
+    <line x1="320" y1="99" x2="356" y2="99" stroke="#334155" stroke-width="1.6" marker-end="url(#a)"/>
+    <line x1="590" y1="99" x2="626" y2="99" stroke="#334155" stroke-width="1.6" marker-end="url(#a)"/>
+    <line x1="475" y1="124" x2="475" y2="156" stroke="#ea580c" stroke-width="1.6" marker-end="url(#a)"/>
+    <rect x="160" y="160" width="630" height="140" rx="10" fill="#fff7ed" stroke="#ea580c"/>
+    <text x="180" y="184" font-size="13" font-weight="bold" fill="#c2410c">Crew (agents and tasks, run by a process: sequential or hierarchical)</text>
+    <rect x="180" y="196" width="180" height="88" rx="8" fill="#ffffff" stroke="#ea580c"/><text x="270" y="216" text-anchor="middle" font-weight="bold">Agent</text><text x="270" y="236" text-anchor="middle">role · goal · backstory</text><text x="270" y="254" text-anchor="middle">tools · LLM</text><text x="270" y="272" text-anchor="middle" font-size="11">runs its own tool loop</text>
+    <rect x="380" y="196" width="180" height="88" rx="8" fill="#ffffff" stroke="#ea580c"/><text x="470" y="216" text-anchor="middle" font-weight="bold">Task</text><text x="470" y="236" text-anchor="middle">description</text><text x="470" y="254" text-anchor="middle">expected output</text><text x="470" y="272" text-anchor="middle" font-size="11">assigned to an agent</text>
+    <rect x="580" y="196" width="190" height="88" rx="8" fill="#ffffff" stroke="#ea580c"/><text x="675" y="216" text-anchor="middle" font-weight="bold">more agents, tasks</text><text x="675" y="236" text-anchor="middle">a researcher, a writer...</text><text x="675" y="254" text-anchor="middle">a manager can delegate</text><text x="675" y="272" text-anchor="middle" font-size="11">(hierarchical process)</text>
+  </g>
+  <text x="20" y="326" font-size="12" fill="#475569">CrewAI's advice: start with a Flow for structure, and call a Crew inside the steps that need autonomy.</text>
+</svg>
