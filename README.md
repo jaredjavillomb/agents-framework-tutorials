@@ -20,6 +20,7 @@ and nothing to pay for.
   there yet. Linux should work too, with the Mac commands.
 - **Memory, which decides the model size** (see the table below). 16 GB runs the default 8B model.
 - **Disk:** about 7 GB free with the default model, less with a smaller one.
+- **Access to the GitHub repo**, which is private for now (setup step 3).
 - **Time:** setup takes 15 to 30 minutes, mostly the model download. Each notebook takes a few minutes.
 
 Not a coder? Open **`README.html`** in your browser instead: the same setup, step by step, with every
@@ -71,7 +72,22 @@ Commands are the same on Mac and Windows unless marked. On Windows, use **PowerS
 
 To check, open <http://localhost:11434> in a browser: it says "Ollama is running".
 
-**3. Download the models.** From the repo root, with the size from the table above. The default:
+**3. Get the project.** It is on GitHub at
+[jaredjavillomb/agents-framework-tutorials](https://github.com/jaredjavillomb/agents-framework-tutorials).
+The repo is private, so ask its owner to add your GitHub account first (a 404 page means that has not
+happened yet). With git (on a Mac it comes with Homebrew's setup; on Windows, `winget install Git.Git`):
+
+```bash
+git clone https://github.com/jaredjavillomb/agents-framework-tutorials.git agent-frameworks
+cd agent-frameworks
+```
+
+Without git, open the repo page, choose **Code > Download ZIP**, unzip it, and rename the folder inside
+from `agents-framework-tutorials-main` to `agent-frameworks`. Later, `git pull` (or a fresh ZIP) brings in
+updates.
+
+**4. Download the models.** From the repo root (the `agent-frameworks` folder), with the size from the
+table above. The default:
 
 ```bash
 ollama pull qwen3:8b                                       # the language model, 5.2 GB
@@ -91,7 +107,7 @@ ollama create qwen3-agents -f contracts/ollama/Modelfile.4b    # or: Modelfile.1
 context), so all three frameworks run on exactly the same model. It takes no extra disk space. To switch
 sizes later, run `create` again with another Modelfile; it replaces the old `qwen3-agents`.
 
-**4. Install a tutorial's environment.** Each tutorial has its own, because the frameworks' dependencies
+**5. Install a tutorial's environment.** Each tutorial has its own, because the frameworks' dependencies
 conflict. Always run `uv` inside a tutorial folder, never at the repo root:
 
 ```bash
@@ -102,7 +118,7 @@ uv sync
 Likewise in `crewai-tutorial` and `strands-tutorial`. uv downloads a suitable Python (3.12 or 3.13) if you
 do not have one. You only need the tutorials you plan to follow.
 
-**5. Check it works.** Still in the tutorial folder:
+**6. Check it works.** Still in the tutorial folder:
 
 ```bash
 uv run python check_setup.py
@@ -206,7 +222,7 @@ uv run --with pytest pytest -q ../contracts/tests
 ## Settings you can change
 
 There is nothing to configure: every tutorial uses `qwen3-agents` on `http://localhost:11434`. For a
-smaller model, rebuild `qwen3-agents` from another Modelfile (setup step 3) rather than changing a setting.
+smaller model, rebuild `qwen3-agents` from another Modelfile (setup step 4) rather than changing a setting.
 
 Two environment variables override the defaults, for example `OLLAMA_HOST=http://otherbox:11434 uv run
 jupyter lab notebooks/` (in PowerShell, set `$env:OLLAMA_HOST = "..."` first):
@@ -229,6 +245,6 @@ Start with `uv run python check_setup.py` in the tutorial folder; it names most 
 | `ModuleNotFoundError` for `lg_agents`, `crew_agents`, `strands_agents_impl` or `agent_contracts` | The notebook is on the wrong kernel. Pick the `.venv` inside that tutorial's folder, or run `uv sync` there. |
 | CrewAI notebook 04 fails on embeddings | Run `ollama pull nomic-embed-text`. |
 | CrewAI says it cannot run inside an event loop | Use the `_async` form, such as `await crew.kickoff_async()`; the notebooks already do. |
-| Very slow answers | Close other memory-hungry apps. An 8B model wants most of 16 GB while it runs. If it stays slow, switch to a smaller model (step 3). |
+| Very slow answers | Close other memory-hungry apps. An 8B model wants most of 16 GB while it runs. If it stays slow, switch to a smaller model (step 4). |
 | `uv` or `ollama` is not recognized (Windows) | Open a new PowerShell window after installing, so it picks up the new programs. |
 | `running scripts is disabled on this system` (Windows) | Use the uv install command exactly as given; its `-ExecutionPolicy ByPass` allows that one script. |

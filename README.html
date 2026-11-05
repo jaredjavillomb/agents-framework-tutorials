@@ -175,8 +175,8 @@ html[data-os="win"] .mac, html:not([data-os="win"]) .win { display: none !import
   <p class="eyebrow">Setup guide &middot; no coding needed</p>
   <h1>Run three AI agent tutorials on your computer</h1>
   <p class="lede">This project teaches how AI "agents" are built, using three popular toolkits: LangGraph, CrewAI and
-  Strands Agents. Everything runs on your own Mac or Windows PC with a free AI model. There is no account to create,
-  no API key and nothing to pay for. This page walks you through the setup one step at a time. You will
+  Strands Agents. Everything runs on your own Mac or Windows PC with a free AI model. There is no API key and
+  nothing to pay for; the only account you need is a free GitHub account, to download the project. This page walks you through the setup one step at a time. You will
   copy and paste a few commands; you do not need to understand them.</p>
   <div class="os-switch" role="group" aria-label="Your computer">
     <span>I am using:</span>
@@ -188,7 +188,7 @@ html[data-os="win"] .mac, html:not([data-os="win"]) .win { display: none !import
   <div class="facts">
     <div class="fact"><b>30 to 60 min</b><span>mostly waiting for downloads</span></div>
     <div class="fact"><b>2 to 7 GB</b><span>of free disk, depending on the model size</span></div>
-    <div class="fact"><b>Free</b><span>no account, no subscription</span></div>
+    <div class="fact"><b>Free</b><span>no API key, no subscription</span></div>
     <div class="fact"><b>Offline after setup</b><span>the AI runs on your computer</span></div>
   </div>
 </header>
@@ -370,14 +370,26 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre>
     <div class="step" data-step="4">
       <div class="num">4</div>
       <div class="step-body">
-        <div class="step-head"><h3>Put the project folder in your home folder</h3><span class="time">1 min</span></div>
-        <p>The person who shared this tutorial gave you a folder called <b>agent-frameworks</b>. If it came as a .zip
-        file, <span class="mac">double-click it to unzip it</span><span class="win">right-click it, choose <b>Extract All</b>,
-        and use the folder inside</span>.</p>
-        <p class="mac">In Finder, choose <b>Go &rsaquo; Home</b> and move the <b>agent-frameworks</b> folder there.</p>
-        <p class="win">In File Explorer, click in the address bar, type <code>%USERPROFILE%</code> and press
-        <kbd>Enter</kbd>. That is your home folder (the one with Desktop, Documents and Downloads in it). Move the
-        <b>agent-frameworks</b> folder there.</p>
+        <div class="step-head"><h3>Download the project from GitHub</h3><span class="time">2 to 5 min</span></div>
+        <p>The project lives on GitHub, a website where code is shared. It is private for now, so you need a free
+        GitHub account that has been given access: create one at <a href="https://github.com/signup">github.com/signup</a>
+        if you do not have one, and send your GitHub username to the person who shared this guide so they can add you.
+        GitHub emails you an invitation; accept it.</p>
+        <ol class="plain">
+          <li>Signed in to GitHub, open
+          <a href="https://github.com/jaredjavillomb/agents-framework-tutorials">github.com/jaredjavillomb/agents-framework-tutorials</a>.
+          (A "404" page means your access has not been added yet.)</li>
+          <li>Click the green <b>Code</b> button, then <b>Download ZIP</b>. The file lands in your Downloads folder.</li>
+          <li><span class="mac">Double-click the .zip file to unzip it.</span><span class="win">Right-click the .zip
+          file and choose <b>Extract All</b>, then <b>Extract</b>. Open the new folder: the project folder is the one
+          inside it.</span></li>
+          <li>Rename the project folder from <b>agents-framework-tutorials-main</b> to <b>agent-frameworks</b>. The
+          rest of this page uses that name.</li>
+          <li class="mac">In Finder, choose <b>Go &rsaquo; Home</b> and move the <b>agent-frameworks</b> folder there.</li>
+          <li class="win">In File Explorer, click in the address bar, type <code>%USERPROFILE%</code> and press
+          <kbd>Enter</kbd>. That is your home folder (the one with Desktop, Documents and Downloads in it). Move the
+          <b>agent-frameworks</b> folder there.</li>
+        </ol>
         <p>Then tell <span class="mac">Terminal</span><span class="win">PowerShell</span> to work inside that folder:</p>
         <div class="term">
           <div class="term-bar"><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
@@ -390,6 +402,18 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre>
           Explorer</span> onto the <span class="mac">Terminal</span><span class="win">PowerShell</span> window. Its location
           appears after <code>cd</code>. Press <span class="mac"><kbd>Return</kbd></span><span class="win"><kbd>Enter</kbd></span>.
           In the later steps, use that location wherever this page says <code>~/agent-frameworks</code>.</p>
+        </div>
+        <div class="note">
+          <strong>Already use git?</strong>
+          <p>Instead of the ZIP, download, name and place the folder in one go<span class="win"> (install git first
+          with <code>winget install Git.Git</code> if you need it)</span>. git asks you to sign in to GitHub the first time.</p>
+          <div class="term">
+            <div class="term-bar"><span class="term-title">Terminal</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>cd ~
+git clone https://github.com/jaredjavillomb/agents-framework-tutorials.git agent-frameworks
+cd agent-frameworks</code></pre>
+          </div>
+          <p>Later, <code>git pull</code> inside that folder fetches any updates.</p>
         </div>
         <div class="see"><b>Check</b><p>Paste <code>ls</code> (it lists the folder). You should see names like
         <code>README.md</code>, <code>contracts</code> and <code>langgraph-tutorial</code>.</p></div>
