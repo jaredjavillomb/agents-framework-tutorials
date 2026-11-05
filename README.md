@@ -15,9 +15,11 @@ and nothing to pay for.
 
 ## What you need
 
-- **A Mac or a Windows PC.** The tutorials were written and run on an M4 Mac with 16 GB. Windows 10 and 11
-  use the same tools and commands; the dependencies resolve for Windows, but no one has run the tutorials
-  there yet. Linux should work too, with the Mac commands.
+- **A Mac or a Windows PC.** The tutorials were written and run on an M4 Mac with 16 GB. Windows uses the
+  same tools and commands. They were also run on Windows 11 (16 GB, an RTX 3060 with 12 GB) with the 4B
+  model: setup, all three `check_setup.py` scripts, the contract tests and 25 of the 27 notebooks (see
+  "Windows run" below). The 8B has not been run on Windows. Windows 10
+  and Linux should work too, but have not been tried.
 - **Memory, which decides the model size** (see the table below). 16 GB runs the default 8B model.
 - **Disk:** about 7 GB free with the default model, less with a smaller one.
 - **Access to the GitHub repo**, which is private for now (setup step 3).
@@ -233,6 +235,28 @@ jupyter lab notebooks/` (in PowerShell, set `$env:OLLAMA_HOST = "..."` first):
 
 CrewAI sends anonymous usage data by default; `crew_agents` turns that off (set
 `CREWAI_DISABLE_TELEMETRY=false` to turn it back on).
+
+## Windows run
+
+Run on Windows 11 Pro, 16 GB, RTX 3060 (12 GB), Ollama 0.40.14, `qwen3-agents` built from the 4B
+(`Modelfile.4b`), Python 3.12.8, PowerShell. No Windows-specific problem turned up.
+
+- `uv sync` and `check_setup.py`: ok in all three tutorials.
+- Contract tests: 28 passed.
+- Notebooks, run top to bottom with `jupyter nbconvert --execute`: every notebook ran except two.
+  - `crewai-tutorial` notebook 02: the model answered "where is my order A1001?" in text instead of making a
+    tool call, so the cell that reads the tool calls fails (`'str' object has no attribute 'function'`).
+  - `strands-tutorial` notebook 06: the agent did not attempt a refund, so there was no approval interrupt
+    to pause on (`'NoneType' object is not iterable`).
+
+  Both fail every time on the 4B and are model behaviour (the model not calling a tool), not a platform
+  problem. That is the likely cause, not a proven one, because the 8B was not run on Windows to compare.
+- `run_eval.py`: one research question passes in all three frameworks. The full ShipFast set on LangGraph
+  passed 5 of 8 on the 4B (S4, S5 and S7 failed); the 8B on the Mac passes 7 of 8. Nothing else was
+  evaluated in full.
+
+Harmless on Windows: running a notebook headlessly prints a zmq warning about the Proactor event loop and a
+warning that the kernel runs over TCP without encryption.
 
 ## Troubleshooting
 
