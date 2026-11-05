@@ -27,4 +27,9 @@ def embedder() -> dict:
 def make_memory(path: str | Path | None = None, read_only: bool = False) -> Memory:
     """A local CrewAI Memory. `read_only=True` recalls without saving new memories after each task, which
     on this machine saves roughly a minute or more per task (each save is analysed by the model first)."""
-    return Memory(llm=make_llm(), embedder=embedder(), storage=str(path or DEFAULT_PATH), read_only=read_only)
+    return Memory(
+        llm=make_llm(),  # the local model analyses each fact before it is saved (CrewAI's default is OpenAI's)
+        embedder=embedder(),  # nomic-embed-text in Ollama turns text into vectors for search by meaning
+        storage=str(path or DEFAULT_PATH),  # a LanceDB folder: the vector database the facts live in
+        read_only=read_only,  # True: recall only, never save
+    )

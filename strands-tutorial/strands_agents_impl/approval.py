@@ -17,24 +17,29 @@ from agent_contracts.shipfast.tools import APPROVAL_THRESHOLD  # policy P5, shar
 
 
 class RefundApproval(HookProvider):
+    # Strands calls register_hooks once, when the hook is given to an Agent: run check() before every tool.
     def register_hooks(self, registry: HookRegistry, **kwargs) -> None:
         registry.add_callback(BeforeToolCallEvent, self.check)
 
     def check(self, event: BeforeToolCallEvent) -> None:
-        call = event.tool_use
+        call = event.tool_use  # the call the model asked for: {"name": ..., "input": {...}, "toolUseId": ...}
         if call["name"] != "issue_refund":
-            return
+            return  # any other tool runs as normal
         args = call.get("input") or {}
         try:
             amount = float(args.get("amount"))
         except (TypeError, ValueError):
             return  # the shared tool rejects a non-numeric amount itself
         if amount <= APPROVAL_THRESHOLD:
-            return
+            return  # $100.00 or less: no approval needed
+        # Over $100: the first time through, interrupt() stops the agent before the tool runs, and the call
+        # returns with stop_reason "interrupt". When the agent is called again with an interruptResponse,
+        # this hook runs again and interrupt() returns the supervisor's decision instead.
         decision = event.interrupt("refund_approval", reason={
             "order_id": args.get("order_id"), "amount": amount, "reason": args.get("reason"),
             "question": f"Approve a refund of ${amount:.2f}? Resume with 'approve' or 'reject'."})
         if decision != "approve":
+            # Rejected: cancel_tool skips the refund and hands the model this text as the tool's result.
             event.cancel_tool = json.dumps({
                 "status": "rejected_by_supervisor", "order_id": args.get("order_id"), "amount": amount,
                 "next_step": "Do not refund. Call escalate_to_human, then tell the customer a specialist will follow up."})

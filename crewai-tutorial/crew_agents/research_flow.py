@@ -84,11 +84,13 @@ class ResearchFlow(Flow[ResearchState]):
 
     @router(or_(draft, "revise"))  # "revise" here is the method below finishing
     def critique(self):
+        # A router's return value is a label: a method decorated @listen("<label>") runs next.
         if self.state.revisions >= MAX_REVISIONS:  # the limit, enforced in code: no third critique
-            return "done"
+            return "done"  # nothing listens for "done", so the flow ends here
+        # One structured model call with the critic's prompt (not a separate agent): a verdict and issues.
         c = critique_draft(self.llm, self.state.question, self.state.findings, self.state.answer, self.state.citations)
-        self.state.critiques.append(c.model_dump())
-        return "needs_revision" if c.verdict == "revise" else "done"
+        self.state.critiques.append(c.model_dump())  # kept in the flow's state, for the report
+        return "needs_revision" if c.verdict == "revise" else "done"  # "needs_revision" triggers revise()
 
     @listen("needs_revision")
     def revise(self):

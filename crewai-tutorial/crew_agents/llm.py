@@ -22,12 +22,13 @@ logging.getLogger("crewai.llms.base_llm").setLevel(logging.ERROR)
 
 
 def make_llm(settings: ModelSettings | None = None) -> LLM:
+    # The shared settings (or the ones passed in). MODEL and OLLAMA_HOST can override the first two.
     s = settings or load_settings()
     return LLM(
-        model=f"ollama/{s.model}",
-        base_url=s.host,
-        temperature=s.temperature,
-        seed=s.seed,
+        model=f"ollama/{s.model}",  # the "ollama/" prefix picks the provider; the rest is the model name
+        base_url=s.host,  # where Ollama listens, http://localhost:11434 by default
+        temperature=s.temperature,  # 0: always the likeliest next token, so runs are close to repeatable
+        seed=s.seed,  # a fixed seed (42), for the same reason
         reasoning_effort="none",  # thinking off on the OpenAI-style API
         context_window_size=s.num_ctx,  # otherwise CrewAI assumes 8,192 and trims early
     )

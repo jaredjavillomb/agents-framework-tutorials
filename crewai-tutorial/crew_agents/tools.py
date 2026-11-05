@@ -14,6 +14,9 @@ from agent_contracts.shipfast import tools as shipfast
 
 
 def _wrap(functions) -> list[BaseTool]:
+    # tool(name) returns a decorator; applying it to f gives a CrewAI BaseTool named after the function.
+    # CrewAI reads f's type hints for the argument schema and its docstring for the description the model
+    # sees. Calling the tool still runs the shared function, unchanged.
     return [tool(f.__name__)(f) for f in functions]
 
 

@@ -14,6 +14,9 @@ from agent_contracts.shipfast import tools as shipfast
 
 
 def shipfast_tools() -> list:
+    # shipfast.TOOLS is the five shared functions: lookup_order, track_shipment, search_policy,
+    # issue_refund and escalate_to_human. tool(f) reads each one's name, type hints and docstring into a
+    # tool spec; calling the tool still runs the shared function, unchanged.
     return [tool(f) for f in shipfast.TOOLS]
 
 

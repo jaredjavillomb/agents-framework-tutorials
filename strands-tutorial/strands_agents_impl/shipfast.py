@@ -65,15 +65,21 @@ class StrandsShipFast:
         return Turn(derive_resolution(t, conv["marker"], reply, outcome=outcome))
 
     async def send(self, conv: dict, text: str, metrics: RunMetrics) -> Turn:
+        # Note where the ledger stands before this turn, so the refunds and tickets it adds can be found,
+        # and point the call-counting hook at this turn's metrics.
         conv["marker"], conv["hook"].metrics = TurnMarker.now(), metrics
-        agent: Agent = conv["agent"]
+        agent: Agent = conv["agent"]  # one agent per conversation: it holds the history (notebook 04)
+        # 1. Triage: one structured call over the conversation so far plus the new message.
         messages = conversation_messages(agent) + [{"role": "user", "content": [{"text": text}]}]
         conv["triage"] = structured_call(self.model, Triage, system=TRIAGE, metrics=metrics, messages=messages)
+        # 2. Out of scope (policy P7): a fixed decline, written into the history; the agent never runs.
         if conv["triage"].intent == "other":
             agent.messages.extend([{"role": "user", "content": [{"text": text}]},
                                    {"role": "assistant", "content": [{"text": DECLINE}]}])
             return Turn(derive_resolution(conv["triage"], conv["marker"], DECLINE))
+        # 3. Otherwise the agent handles the message, with its tools and the approval hook.
         result = await agent.invoke_async(text)
+        # 4. Build the Resolution: code reads the ledger for the facts; the model's text is only the reply.
         return await self._finish(conv, result, metrics)
 
     async def resume(self, conv: dict, decision: str, metrics: RunMetrics) -> Turn:

@@ -30,12 +30,14 @@ def structured_call(model: OllamaModel, schema: type[T], prompt: str | None = No
                     metrics: RunMetrics | None = None, messages: list[dict] | None = None) -> T:
     """One structured answer. Pass `prompt` for a single user message, or `messages` (Strands message dicts)
     for a whole conversation."""
-    messages = messages or [{"role": "user", "content": [{"text": prompt}]}]
+    messages = messages or [{"role": "user", "content": [{"text": prompt}]}]  # Strands' message shape
+    # Let Strands build the Ollama request (model, settings, messages), then change three things.
     request = model.format_request(messages=messages, system_prompt=system)
-    request["format"] = schema.model_json_schema()
-    request["stream"] = False
-    request.pop("tools", None)
+    request["format"] = schema.model_json_schema()  # Ollama constrains the reply to this JSON schema
+    request["stream"] = False  # one complete reply, which carries the token counts
+    request.pop("tools", None)  # a structured step answers; it does not call tools
     response = ollama.Client(model.host, **(model.client_args or {})).chat(**request)
     if metrics is not None:
+        # Ollama's names for the counts: prompt_eval_count is input tokens, eval_count is output tokens.
         metrics.add_llm_call(response.prompt_eval_count, response.eval_count)
-    return schema.model_validate_json(response.message.content.strip())
+    return schema.model_validate_json(response.message.content.strip())  # JSON text -> a pydantic object

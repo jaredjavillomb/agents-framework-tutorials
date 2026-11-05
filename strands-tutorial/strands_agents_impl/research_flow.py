@@ -46,31 +46,37 @@ def run_research(question_id: str, question: str, model=None, metrics: RunMetric
     """Run the whole research workflow for one question and return its state. With `metrics`, every model
     call is counted: the structured steps directly, the research agent through `HarnessHook`."""
     model = model or make_model()
-    hooks = [HarnessHook(metrics)] if metrics is not None else []
+    hooks = [HarnessHook(metrics)] if metrics is not None else []  # counts the research agent's model calls
+    # The workflow's state is a plain dict; each step below adds to it.
     state = {"question_id": question_id, "question": question, "critiques": [], "revisions": 0}
 
+    # Plan: one structured call that returns a list of steps.
     state["plan"] = structured_call(model, Plan, question, system=PLANNER,
                                     metrics=metrics).steps
 
+    # Research: the one step that is an agent, with tools and a loop. It gets the question and the plan.
     researcher = Agent(model=model, tools=research_tools(), system_prompt=RESEARCHER, hooks=hooks, callback_handler=None)
     summary = str(researcher(f"Question: {question}\nPlan:\n" + "\n".join(f"- {s}" for s in state["plan"])))
+    # The findings are the raw tool results plus the agent's summary, so the writer sees the evidence too.
     tool_results = [block["toolResult"]["content"][0]["text"] for message in researcher.messages
                     for block in message["content"] if "toolResult" in block]
     state["findings"] = "Tool results:\n" + "\n".join(tool_results) + "\n\nResearcher's summary:\n" + summary
 
+    # Write: one structured call that returns an answer and its citations. `extra` carries revision notes.
     def write(extra: str = "") -> None:
         d = structured_call(model, Draft, f"Question: {question}\n\nFindings:\n{state['findings']}{extra}",
                             system=WRITER, metrics=metrics)
         state["answer"], state["citations"] = d.answer, d.citations
 
-    write()
+    write()  # the first draft
+    # Critique and revise, in plain Python: the loop is a `while`, the limit an `if`.
     while True:
         c = critique_draft(model, question, state["findings"], state["answer"], state["citations"], metrics)
         state["critiques"].append(c.model_dump())
         if c.verdict == "pass":
-            break
+            break  # the critic is satisfied
         issues = "\n".join(f"- {i}" for i in c.issues) or "- (no details given)"
-        write(f"\n\nYour previous draft:\n{state['answer']}\n\nFix these problems:\n{issues}")
+        write(f"\n\nYour previous draft:\n{state['answer']}\n\nFix these problems:\n{issues}")  # revise
         state["revisions"] += 1
         if state["revisions"] >= MAX_REVISIONS:  # the limit, enforced in code: no third critique
             break
