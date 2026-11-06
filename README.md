@@ -22,7 +22,6 @@ and nothing to pay for.
   and Linux should work too, but have not been tried.
 - **Memory, which decides the model size** (see the table below). 16 GB runs the default 8B model.
 - **Disk:** about 7 GB free with the default model, less with a smaller one.
-- **Access to the GitHub repo**, which is private for now (setup step 3).
 - **Time:** setup takes 15 to 30 minutes, mostly the model download. Each notebook takes a few minutes.
 
 Not a coder? Open **`README.html`** in your browser instead: the same setup, step by step, with every
@@ -76,8 +75,7 @@ To check, open <http://localhost:11434> in a browser: it says "Ollama is running
 
 **3. Get the project.** It is on GitHub at
 [jaredjavillomb/agents-framework-tutorials](https://github.com/jaredjavillomb/agents-framework-tutorials).
-The repo is private, so ask its owner to add your GitHub account first (a 404 page means that has not
-happened yet). With git (on a Mac it comes with Homebrew's setup; on Windows, `winget install Git.Git`):
+It is public, so you do not need a GitHub account. With git (on a Mac it comes with Homebrew's setup; on Windows, `winget install Git.Git`):
 
 ```bash
 git clone https://github.com/jaredjavillomb/agents-framework-tutorials.git agent-frameworks
